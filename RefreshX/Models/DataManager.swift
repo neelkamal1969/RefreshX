@@ -26,6 +26,8 @@ class DataManager {
     private(set) var userSettings: UserSettings?
     private(set) var userStreak: Streak?
     
+
+    
     // Private initializer for singleton
     private init() {
         // Automatically load sample data for development
