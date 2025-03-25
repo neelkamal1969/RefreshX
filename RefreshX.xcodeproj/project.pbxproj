@@ -1,0 +1,631 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 77;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		DB7D2D9A2D92AB5000A6BA98 /* Auth in Frameworks */ = {isa = PBXBuildFile; productRef = DB7D2D992D92AB5000A6BA98 /* Auth */; };
+		DB7D2D9C2D92AB5000A6BA98 /* Functions in Frameworks */ = {isa = PBXBuildFile; productRef = DB7D2D9B2D92AB5000A6BA98 /* Functions */; };
+		DB7D2D9E2D92AB5000A6BA98 /* PostgREST in Frameworks */ = {isa = PBXBuildFile; productRef = DB7D2D9D2D92AB5000A6BA98 /* PostgREST */; };
+		DB7D2DA02D92AB5000A6BA98 /* Realtime in Frameworks */ = {isa = PBXBuildFile; productRef = DB7D2D9F2D92AB5000A6BA98 /* Realtime */; };
+		DB7D2DA22D92AB5000A6BA98 /* Storage in Frameworks */ = {isa = PBXBuildFile; productRef = DB7D2DA12D92AB5000A6BA98 /* Storage */; };
+		DB7D2DA42D92AB5000A6BA98 /* Supabase in Frameworks */ = {isa = PBXBuildFile; productRef = DB7D2DA32D92AB5000A6BA98 /* Supabase */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		DB7D2D692D92A96000A6BA98 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = DB7D2D502D92A95C00A6BA98 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = DB7D2D572D92A95C00A6BA98;
+			remoteInfo = RefreshX;
+		};
+		DB7D2D732D92A96000A6BA98 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = DB7D2D502D92A95C00A6BA98 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = DB7D2D572D92A95C00A6BA98;
+			remoteInfo = RefreshX;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXFileReference section */
+		DB7D2D582D92A95C00A6BA98 /* RefreshX.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = RefreshX.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		DB7D2D682D92A96000A6BA98 /* RefreshXTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = RefreshXTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		DB7D2D722D92A96000A6BA98 /* RefreshXUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = RefreshXUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+/* End PBXFileReference section */
+
+/* Begin PBXFileSystemSynchronizedRootGroup section */
+		DB7D2D5A2D92A95C00A6BA98 /* RefreshX */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = RefreshX;
+			sourceTree = "<group>";
+		};
+		DB7D2D6B2D92A96000A6BA98 /* RefreshXTests */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = RefreshXTests;
+			sourceTree = "<group>";
+		};
+		DB7D2D752D92A96000A6BA98 /* RefreshXUITests */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = RefreshXUITests;
+			sourceTree = "<group>";
+		};
+/* End PBXFileSystemSynchronizedRootGroup section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		DB7D2D552D92A95C00A6BA98 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				DB7D2D9E2D92AB5000A6BA98 /* PostgREST in Frameworks */,
+				DB7D2D9C2D92AB5000A6BA98 /* Functions in Frameworks */,
+				DB7D2DA42D92AB5000A6BA98 /* Supabase in Frameworks */,
+				DB7D2D9A2D92AB5000A6BA98 /* Auth in Frameworks */,
+				DB7D2DA22D92AB5000A6BA98 /* Storage in Frameworks */,
+				DB7D2DA02D92AB5000A6BA98 /* Realtime in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		DB7D2D652D92A96000A6BA98 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		DB7D2D6F2D92A96000A6BA98 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		DB7D2D4F2D92A95C00A6BA98 = {
+			isa = PBXGroup;
+			children = (
+				DB7D2D5A2D92A95C00A6BA98 /* RefreshX */,
+				DB7D2D6B2D92A96000A6BA98 /* RefreshXTests */,
+				DB7D2D752D92A96000A6BA98 /* RefreshXUITests */,
+				DB7D2D592D92A95C00A6BA98 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		DB7D2D592D92A95C00A6BA98 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				DB7D2D582D92A95C00A6BA98 /* RefreshX.app */,
+				DB7D2D682D92A96000A6BA98 /* RefreshXTests.xctest */,
+				DB7D2D722D92A96000A6BA98 /* RefreshXUITests.xctest */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		DB7D2D572D92A95C00A6BA98 /* RefreshX */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = DB7D2D7C2D92A96000A6BA98 /* Build configuration list for PBXNativeTarget "RefreshX" */;
+			buildPhases = (
+				DB7D2D542D92A95C00A6BA98 /* Sources */,
+				DB7D2D552D92A95C00A6BA98 /* Frameworks */,
+				DB7D2D562D92A95C00A6BA98 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			fileSystemSynchronizedGroups = (
+				DB7D2D5A2D92A95C00A6BA98 /* RefreshX */,
+			);
+			name = RefreshX;
+			packageProductDependencies = (
+				DB7D2D992D92AB5000A6BA98 /* Auth */,
+				DB7D2D9B2D92AB5000A6BA98 /* Functions */,
+				DB7D2D9D2D92AB5000A6BA98 /* PostgREST */,
+				DB7D2D9F2D92AB5000A6BA98 /* Realtime */,
+				DB7D2DA12D92AB5000A6BA98 /* Storage */,
+				DB7D2DA32D92AB5000A6BA98 /* Supabase */,
+			);
+			productName = RefreshX;
+			productReference = DB7D2D582D92A95C00A6BA98 /* RefreshX.app */;
+			productType = "com.apple.product-type.application";
+		};
+		DB7D2D672D92A96000A6BA98 /* RefreshXTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = DB7D2D7F2D92A96000A6BA98 /* Build configuration list for PBXNativeTarget "RefreshXTests" */;
+			buildPhases = (
+				DB7D2D642D92A96000A6BA98 /* Sources */,
+				DB7D2D652D92A96000A6BA98 /* Frameworks */,
+				DB7D2D662D92A96000A6BA98 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				DB7D2D6A2D92A96000A6BA98 /* PBXTargetDependency */,
+			);
+			fileSystemSynchronizedGroups = (
+				DB7D2D6B2D92A96000A6BA98 /* RefreshXTests */,
+			);
+			name = RefreshXTests;
+			packageProductDependencies = (
+			);
+			productName = RefreshXTests;
+			productReference = DB7D2D682D92A96000A6BA98 /* RefreshXTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
+		DB7D2D712D92A96000A6BA98 /* RefreshXUITests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = DB7D2D822D92A96000A6BA98 /* Build configuration list for PBXNativeTarget "RefreshXUITests" */;
+			buildPhases = (
+				DB7D2D6E2D92A96000A6BA98 /* Sources */,
+				DB7D2D6F2D92A96000A6BA98 /* Frameworks */,
+				DB7D2D702D92A96000A6BA98 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				DB7D2D742D92A96000A6BA98 /* PBXTargetDependency */,
+			);
+			fileSystemSynchronizedGroups = (
+				DB7D2D752D92A96000A6BA98 /* RefreshXUITests */,
+			);
+			name = RefreshXUITests;
+			packageProductDependencies = (
+			);
+			productName = RefreshXUITests;
+			productReference = DB7D2D722D92A96000A6BA98 /* RefreshXUITests.xctest */;
+			productType = "com.apple.product-type.bundle.ui-testing";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		DB7D2D502D92A95C00A6BA98 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = 1;
+				LastSwiftUpdateCheck = 1620;
+				LastUpgradeCheck = 1620;
+				TargetAttributes = {
+					DB7D2D572D92A95C00A6BA98 = {
+						CreatedOnToolsVersion = 16.2;
+					};
+					DB7D2D672D92A96000A6BA98 = {
+						CreatedOnToolsVersion = 16.2;
+						TestTargetID = DB7D2D572D92A95C00A6BA98;
+					};
+					DB7D2D712D92A96000A6BA98 = {
+						CreatedOnToolsVersion = 16.2;
+						TestTargetID = DB7D2D572D92A95C00A6BA98;
+					};
+				};
+			};
+			buildConfigurationList = DB7D2D532D92A95C00A6BA98 /* Build configuration list for PBXProject "RefreshX" */;
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = DB7D2D4F2D92A95C00A6BA98;
+			minimizedProjectReferenceProxies = 1;
+			packageReferences = (
+				DB7D2D982D92AB5000A6BA98 /* XCRemoteSwiftPackageReference "supabase-swift" */,
+			);
+			preferredProjectObjectVersion = 77;
+			productRefGroup = DB7D2D592D92A95C00A6BA98 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				DB7D2D572D92A95C00A6BA98 /* RefreshX */,
+				DB7D2D672D92A96000A6BA98 /* RefreshXTests */,
+				DB7D2D712D92A96000A6BA98 /* RefreshXUITests */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		DB7D2D562D92A95C00A6BA98 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		DB7D2D662D92A96000A6BA98 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		DB7D2D702D92A96000A6BA98 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		DB7D2D542D92A95C00A6BA98 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		DB7D2D642D92A96000A6BA98 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		DB7D2D6E2D92A96000A6BA98 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		DB7D2D6A2D92A96000A6BA98 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = DB7D2D572D92A95C00A6BA98 /* RefreshX */;
+			targetProxy = DB7D2D692D92A96000A6BA98 /* PBXContainerItemProxy */;
+		};
+		DB7D2D742D92A96000A6BA98 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = DB7D2D572D92A95C00A6BA98 /* RefreshX */;
+			targetProxy = DB7D2D732D92A96000A6BA98 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin XCBuildConfiguration section */
+		DB7D2D7A2D92A96000A6BA98 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 18.2;
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = iphoneos;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited)";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+			};
+			name = Debug;
+		};
+		DB7D2D7B2D92A96000A6BA98 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 18.2;
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				SDKROOT = iphoneos;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		DB7D2D7D2D92A96000A6BA98 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_ASSET_PATHS = "\"RefreshX/Preview Content\"";
+				DEVELOPMENT_TEAM = R76599CG98;
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
+				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
+				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.swiftsparx.RefreshX;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		DB7D2D7E2D92A96000A6BA98 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_ASSET_PATHS = "\"RefreshX/Preview Content\"";
+				DEVELOPMENT_TEAM = R76599CG98;
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
+				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
+				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.swiftsparx.RefreshX;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
+		DB7D2D802D92A96000A6BA98 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = R76599CG98;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 18.2;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.swiftsparx.RefreshXTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/RefreshX.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/RefreshX";
+			};
+			name = Debug;
+		};
+		DB7D2D812D92A96000A6BA98 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = R76599CG98;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 18.2;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.swiftsparx.RefreshXTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/RefreshX.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/RefreshX";
+			};
+			name = Release;
+		};
+		DB7D2D832D92A96000A6BA98 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = R76599CG98;
+				GENERATE_INFOPLIST_FILE = YES;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.swiftsparx.RefreshXUITests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_TARGET_NAME = RefreshX;
+			};
+			name = Debug;
+		};
+		DB7D2D842D92A96000A6BA98 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = R76599CG98;
+				GENERATE_INFOPLIST_FILE = YES;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.swiftsparx.RefreshXUITests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_TARGET_NAME = RefreshX;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		DB7D2D532D92A95C00A6BA98 /* Build configuration list for PBXProject "RefreshX" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				DB7D2D7A2D92A96000A6BA98 /* Debug */,
+				DB7D2D7B2D92A96000A6BA98 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		DB7D2D7C2D92A96000A6BA98 /* Build configuration list for PBXNativeTarget "RefreshX" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				DB7D2D7D2D92A96000A6BA98 /* Debug */,
+				DB7D2D7E2D92A96000A6BA98 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		DB7D2D7F2D92A96000A6BA98 /* Build configuration list for PBXNativeTarget "RefreshXTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				DB7D2D802D92A96000A6BA98 /* Debug */,
+				DB7D2D812D92A96000A6BA98 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		DB7D2D822D92A96000A6BA98 /* Build configuration list for PBXNativeTarget "RefreshXUITests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				DB7D2D832D92A96000A6BA98 /* Debug */,
+				DB7D2D842D92A96000A6BA98 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		DB7D2D982D92AB5000A6BA98 /* XCRemoteSwiftPackageReference "supabase-swift" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/supabase-community/supabase-swift";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 2.5.1;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		DB7D2D992D92AB5000A6BA98 /* Auth */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = DB7D2D982D92AB5000A6BA98 /* XCRemoteSwiftPackageReference "supabase-swift" */;
+			productName = Auth;
+		};
+		DB7D2D9B2D92AB5000A6BA98 /* Functions */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = DB7D2D982D92AB5000A6BA98 /* XCRemoteSwiftPackageReference "supabase-swift" */;
+			productName = Functions;
+		};
+		DB7D2D9D2D92AB5000A6BA98 /* PostgREST */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = DB7D2D982D92AB5000A6BA98 /* XCRemoteSwiftPackageReference "supabase-swift" */;
+			productName = PostgREST;
+		};
+		DB7D2D9F2D92AB5000A6BA98 /* Realtime */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = DB7D2D982D92AB5000A6BA98 /* XCRemoteSwiftPackageReference "supabase-swift" */;
+			productName = Realtime;
+		};
+		DB7D2DA12D92AB5000A6BA98 /* Storage */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = DB7D2D982D92AB5000A6BA98 /* XCRemoteSwiftPackageReference "supabase-swift" */;
+			productName = Storage;
+		};
+		DB7D2DA32D92AB5000A6BA98 /* Supabase */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = DB7D2D982D92AB5000A6BA98 /* XCRemoteSwiftPackageReference "supabase-swift" */;
+			productName = Supabase;
+		};
+/* End XCSwiftPackageProductDependency section */
+	};
+	rootObject = DB7D2D502D92A95C00A6BA98 /* Project object */;
+}
