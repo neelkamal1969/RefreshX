@@ -71,6 +71,10 @@ struct Routine: Identifiable, Codable {
             .reduce(0, +)
         return totalSeconds / 60
     }
+
+    
+    
+    
     
         // Total calories burned
     var totalCaloriesBurned: Double {

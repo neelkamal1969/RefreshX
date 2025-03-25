@@ -1,5 +1,5 @@
 //
-//  ContentView.swift
+//  ProgressView.swift
 //  RefreshX
 //
 //  Created by student-2 on 25/03/25.
@@ -7,23 +7,20 @@
 
 import SwiftUI
 
-struct ContentView: View {
+struct ProgressView: View {
     @EnvironmentObject var dataManager: DataManager
     
     var body: some View {
-        Group {
-            if dataManager.isLoggedIn {
-                MainTabView()
-            } else {
-                AuthView()
-            }
+        NavigationView {
+            Text("Progress Screen - Coming Soon")
+                .navigationTitle("Progress")
         }
     }
 }
 
-struct ContentView_Previews: PreviewProvider {
+struct ProgressView_Previews: PreviewProvider {
     static var previews: some View {
-        ContentView()
+        ProgressView()
             .environmentObject(DataManager.shared)
     }
 }

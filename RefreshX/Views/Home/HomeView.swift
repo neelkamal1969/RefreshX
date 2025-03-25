@@ -1,5 +1,5 @@
 //
-//  ContentView.swift
+//  HomeView.swift
 //  RefreshX
 //
 //  Created by student-2 on 25/03/25.
@@ -7,23 +7,20 @@
 
 import SwiftUI
 
-struct ContentView: View {
+struct HomeView: View {
     @EnvironmentObject var dataManager: DataManager
     
     var body: some View {
-        Group {
-            if dataManager.isLoggedIn {
-                MainTabView()
-            } else {
-                AuthView()
-            }
+        NavigationView {
+            Text("Home Screen - Coming Soon")
+                .navigationTitle("Home")
         }
     }
 }
 
-struct ContentView_Previews: PreviewProvider {
+struct HomeView_Previews: PreviewProvider {
     static var previews: some View {
-        ContentView()
+        HomeView()
             .environmentObject(DataManager.shared)
     }
 }

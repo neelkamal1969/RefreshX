@@ -4,47 +4,70 @@
 //
 //  Created by student-2 on 25/03/25.
 //
-
 import Foundation
+import Combine
+
 /// Central data manager with shared instance pattern
-class DataManager {
+class DataManager: ObservableObject {
     // Singleton instance
     static let shared = DataManager()
     
-    // Current user
-    private(set) var currentUser: User?
-    
-    // Data collections
-    private(set) var exercises: [UUID: Exercise] = [:]
-    private(set) var articles: [UUID: Article] = [:]
-    private(set) var userRoutine: Routine?
-    private(set) var notifications: [AppNotification] = []
-    private(set) var exerciseSessions: [ExerciseSession] = []
-    private(set) var breakSessions: [BreakSession] = []
-    private(set) var dailyProgress: DailyProgress?
-    private(set) var weeklyStats: WeeklyStats?
-    private(set) var userSettings: UserSettings?
-    private(set) var userStreak: Streak?
-    
-
+    // Add published properties with @Published where necessary
+    @Published private(set) var currentUser: User?
+    @Published private(set) var exercises: [UUID: Exercise] = [:]
+    @Published private(set) var articles: [UUID: Article] = [:]
+    @Published private(set) var userRoutine: Routine?
+    @Published private(set) var notifications: [AppNotification] = []
+    @Published private(set) var exerciseSessions: [ExerciseSession] = []
+    @Published private(set) var breakSessions: [BreakSession] = []
+    @Published private(set) var dailyProgress: DailyProgress?
+    @Published private(set) var weeklyStats: WeeklyStats?
+    @Published private(set) var userSettings: UserSettings?
+    @Published private(set) var userStreak: Streak?
+    @Published var isLoggedIn: Bool = false
     
     // Private initializer for singleton
     private init() {
-        // Automatically load sample data for development
-        loadSampleData()
+        print("Initializing DataManager")
+        // Don't load sample data here - it can cause circular references
     }
     
     // MARK: - User Management
     
+    /// Load sample data on demand after initialization
+    func loadSampleData() {
+        print("Loading sample data")
+        do {
+            let sampleUser = try User(
+                name: "John Doe",
+                email: "john@example.com",
+                password: "password123",
+                dateOfBirth: Calendar.current.date(byAdding: .year, value: -30, to: Date()) ?? Date(),
+                weekdays: 5,
+                numberOfBreaksPreferred: 4,
+                breakDuration: 15
+            )
+            currentUser = sampleUser
+            isLoggedIn = true
+            loadUserData()
+            print("Sample data loaded successfully")
+        } catch {
+            print("Failed to create sample user: \(error)")
+            currentUser = nil
+        }
+    }
+    
     /// Set the current user after successful login
     func setCurrentUser(_ user: User) {
         self.currentUser = user
+        self.isLoggedIn = true
         loadUserData()
     }
     
     /// Clear current user on logout
     func clearCurrentUser() {
         self.currentUser = nil
+        self.isLoggedIn = false
         clearUserData()
     }
     
@@ -528,25 +551,6 @@ class DataManager {
     
     // MARK: - Sample Data Methods
     
-    func loadSampleData() {
-        do {
-            let sampleUser = try User(
-                name: "John Doe",
-                email: "john@example.com",
-                password: "password123",
-                dateOfBirth: Calendar.current.date(byAdding: .year, value: -30, to: Date()) ?? Date(),
-                weekdays: 5,
-                numberOfBreaksPreferred: 4,
-                breakDuration: 15
-            )
-            currentUser = sampleUser
-            loadUserData()
-        } catch {
-            print("Failed to create sample user: \(error)")
-            currentUser = nil
-        }
-    }
-    
     private func createSampleExercises() -> [Exercise] {
         let eyeExercises: [Exercise] = [
             try! Exercise( // Using try! here since it's sample data and guaranteed valid
@@ -554,8 +558,8 @@ class DataManager {
                 title: "20-20-20 Rule",
                 duration: 60,
                 description: "Reduce eye strain with a 20-second glance.",
-                thumbnailImage: "eye_exercise_1_thumb",
-                mainImage: "eye_exercise_1_main",
+                thumbnailImage: "202020_rule",
+                mainImage: "202020_rule",
                 reps: nil,
                 sets: nil,
                 instructions: "Every 20 minutes, stop looking at your screen. Focus on an object 20 feet away for 20 seconds. Relax your shoulders and breathe deeply.",
@@ -568,14 +572,14 @@ class DataManager {
                 whatsInItForYou: "Reduced eye fatigue, fewer headaches, and better focus during work.",
                 metValue: 1.0,
                 addedDate: Date().addingTimeInterval(-3600 * 24 * 30)
-            ),
+                         ),
             try! Exercise(
                 id: UUID(),
                 title: "Eye Rotations",
                 duration: 20,
                 description: "Rotate your eyes to improve mobility.",
-                thumbnailImage: "eye_exercise_2_thumb",
-                mainImage: "eye_exercise_2_main",
+                thumbnailImage: "eye_clock_streches",
+                mainImage: "eye_clock_streches",
                 reps: 3,
                 sets: 1,
                 instructions: "Keep your head still. Slowly rotate your eyes in a clockwise circle. Repeat 3 times. Then rotate counterclockwise 3 times.",
@@ -593,8 +597,8 @@ class DataManager {
                 title: "Chair Cat-Cow",
                 duration: 30,
                 description: "Flex and extend your spine while seated.",
-                thumbnailImage: "back_exercise_1_thumb",
-                mainImage: "back_exercise_1_main",
+                thumbnailImage: "desk_cat_cow_strech",
+                mainImage: "desk_cat_cow_strech",
                 reps: 5,
                 sets: 3,
                 instructions: "Sit at the edge of your chair. For Cat: round your back, drop your chin to chest. For Cow: arch your back, look up gently. Alternate between positions.",
@@ -610,8 +614,8 @@ class DataManager {
                 title: "Seated Spinal Twist",
                 duration: 30,
                 description: "Gently twist your spine to release tension.",
-                thumbnailImage: "back_exercise_2_thumb",
-                mainImage: "back_exercise_2_main",
+                thumbnailImage: "seated_twist",
+                mainImage: "seated_twist",
                 reps: 1,
                 sets: 2,
                 instructions: "Sit straight. Place right hand on left knee. Place left hand behind you. Gently twist to the left. Hold for 15 seconds. Repeat on other side.",
@@ -627,8 +631,8 @@ class DataManager {
                 title: "Wrist Flexor Stretch",
                 duration: 15,
                 description: "Stretch the inside of your forearm.",
-                thumbnailImage: "wrist_exercise_1_thumb",
-                mainImage: "wrist_exercise_1_main",
+                thumbnailImage: "wrist_flexor",
+                mainImage: "wrist_flexor",
                 reps: 1,
                 sets: 2,
                 instructions: "Extend arm with palm up. Use other hand to gently pull fingers back toward your body. Hold for 15 seconds. Repeat on other arm.",
@@ -641,8 +645,8 @@ class DataManager {
                 title: "Wrist Rotations",
                 duration: 10,
                 description: "Improve wrist mobility with rotations.",
-                thumbnailImage: "wrist_exercise_2_thumb",
-                mainImage: "wrist_exercise_2_main",
+                thumbnailImage: "wrist_circle",
+                mainImage: "wrist_circle",
                 reps: 10,
                 sets: 2,
                 instructions: "Extend arms forward. Make a fist. Rotate wrists in circles, 10 times clockwise and 10 times counterclockwise.",
@@ -654,6 +658,7 @@ class DataManager {
         
         return eyeExercises + backExercises + wristExercises
     }
+    
     /// Create sample articles data
     private func createSampleArticles() -> [Article] {
         do {
@@ -665,8 +670,8 @@ class DataManager {
                     readTime: 4,
                     mainTopic: .eye,
                     additionalTopics: ["wellness"],
-                    thumbnailImage: "eye_article_1_thumb",
-                    mainImage: "eye_article_1_main",
+                    thumbnailImage: "eye1mn",
+                    mainImage: "eye1tn",
                     addingDate: Date().addingTimeInterval(-3600 * 24 * 15), // 15 days ago
                     readByNumOfUsers: 142,
                     description: "Guide to Home Remedies for Optimal Eye Care",
@@ -688,8 +693,8 @@ class DataManager {
                     author: "Aayish Khan",
                     readTime: 5,
                     mainTopic: .back,
-                    thumbnailImage: "back_article_1_thumb",
-                    mainImage: "back_article_1_main",
+                    thumbnailImage: "postureAndSpine4mn",
+                    mainImage: "postureAndSpine4tn",
                     addingDate: Date().addingTimeInterval(-3600 * 24 * 10), // 10 days ago
                     readByNumOfUsers: 87,
                     description: "Learn proper sitting posture to prevent back pain",
@@ -711,8 +716,8 @@ class DataManager {
                     author: "Grey top Warriors",
                     readTime: 3,
                     mainTopic: .wrist,
-                    thumbnailImage: "wrist_article_1_thumb",
-                    mainImage: "wrist_article_1_main",
+                    thumbnailImage: "wristNutrition7mn",
+                    mainImage: "wristNutrition7mn",
                     addingDate: Date().addingTimeInterval(-3600 * 24 * 5), // 5 days ago
                     readByNumOfUsers: 53,
                     description: "Prevent carpal tunnel with these simple stretches",

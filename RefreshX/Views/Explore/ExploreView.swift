@@ -1,5 +1,5 @@
 //
-//  ContentView.swift
+//  ExploreView.swift
 //  RefreshX
 //
 //  Created by student-2 on 25/03/25.
@@ -7,23 +7,20 @@
 
 import SwiftUI
 
-struct ContentView: View {
+struct ExploreView: View {
     @EnvironmentObject var dataManager: DataManager
     
     var body: some View {
-        Group {
-            if dataManager.isLoggedIn {
-                MainTabView()
-            } else {
-                AuthView()
-            }
+        NavigationView {
+            Text("Explore Screen - Coming Soon")
+                .navigationTitle("Explore")
         }
     }
 }
 
-struct ContentView_Previews: PreviewProvider {
+struct ExploreView_Previews: PreviewProvider {
     static var previews: some View {
-        ContentView()
+        ExploreView()
             .environmentObject(DataManager.shared)
     }
 }
