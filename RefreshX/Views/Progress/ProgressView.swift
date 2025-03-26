@@ -4,7 +4,6 @@
 //
 //  Created by student-2 on 25/03/25.
 //
-
 import SwiftUI
 
 struct ProgressView: View {
@@ -12,8 +11,14 @@ struct ProgressView: View {
     
     var body: some View {
         NavigationView {
-            Text("Progress Screen - Coming Soon")
-                .navigationTitle("Progress")
+            VStack {
+                Text("Progress Screen - Coming Soon")
+                    .font(.system(.title, design: .rounded))
+                    .foregroundColor(Color("PrimaryText"))
+            }
+            .navigationTitle("Progress")
+            .frame(maxWidth: .infinity, maxHeight: .infinity)
+            .background(Color("PrimaryBackground"))
         }
     }
 }

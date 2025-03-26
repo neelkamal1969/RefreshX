@@ -4,8 +4,6 @@
 //
 //  Created by student-2 on 25/03/25.
 //
-
-
 import SwiftUI
 
 struct ExercisesView: View {
@@ -13,8 +11,14 @@ struct ExercisesView: View {
     
     var body: some View {
         NavigationView {
-            Text("Exercises Screen - Coming Soon")
-                .navigationTitle("Exercises")
+            VStack {
+                Text("Exercises Screen - Coming Soon")
+                    .font(.system(.title, design: .rounded))
+                    .foregroundColor(Color("PrimaryText"))
+            }
+            .navigationTitle("Exercises")
+            .frame(maxWidth: .infinity, maxHeight: .infinity)
+            .background(Color("PrimaryBackground"))
         }
     }
 }

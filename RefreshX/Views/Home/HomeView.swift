@@ -4,7 +4,6 @@
 //
 //  Created by student-2 on 25/03/25.
 //
-
 import SwiftUI
 
 struct HomeView: View {
@@ -12,8 +11,14 @@ struct HomeView: View {
     
     var body: some View {
         NavigationView {
-            Text("Home Screen - Coming Soon")
-                .navigationTitle("Home")
+            VStack {
+                Text("Home Screen - Coming Soon")
+                    .font(.system(.title, design: .rounded))
+                    .foregroundColor(Color("PrimaryText"))
+            }
+            .navigationTitle("Home")
+            .frame(maxWidth: .infinity, maxHeight: .infinity)
+            .background(Color("PrimaryBackground"))
         }
     }
 }

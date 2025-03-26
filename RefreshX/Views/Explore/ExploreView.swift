@@ -4,7 +4,6 @@
 //
 //  Created by student-2 on 25/03/25.
 //
-
 import SwiftUI
 
 struct ExploreView: View {
@@ -12,8 +11,14 @@ struct ExploreView: View {
     
     var body: some View {
         NavigationView {
-            Text("Explore Screen - Coming Soon")
-                .navigationTitle("Explore")
+            VStack {
+                Text("Explore Screen - Coming Soon")
+                    .font(.system(.title, design: .rounded))
+                    .foregroundColor(Color("PrimaryText"))
+            }
+            .navigationTitle("Explore")
+            .frame(maxWidth: .infinity, maxHeight: .infinity)
+            .background(Color("PrimaryBackground"))
         }
     }
 }

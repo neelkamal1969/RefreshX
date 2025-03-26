@@ -4,7 +4,6 @@
 //
 //  Created by student-2 on 25/03/25.
 //
-
 import SwiftUI
 
 struct MainTabView: View {
@@ -14,7 +13,7 @@ struct MainTabView: View {
         TabView {
             HomeView()
                 .tabItem {
-                    Label("Home", systemImage: "house")
+                    Label("Home", systemImage: "house.fill")
                 }
             
             ExercisesView()
@@ -24,19 +23,20 @@ struct MainTabView: View {
             
             ProgressView()
                 .tabItem {
-                    Label("Progress", systemImage: "chart.bar")
+                    Label("Progress", systemImage: "chart.bar.fill")
                 }
             
             ExploreView()
                 .tabItem {
-                    Label("Explore", systemImage: "safari")
+                    Label("Explore", systemImage: "safari.fill")
                 }
             
             ProfileView()
                 .tabItem {
-                    Label("Profile", systemImage: "person")
+                    Label("Profile", systemImage: "person.fill")
                 }
         }
+        .accentColor(Color("AccentColor")) // Apply system blue as accent
     }
 }
 
