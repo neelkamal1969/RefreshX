@@ -1,0 +1,211 @@
+
+**Project Overview:**
+I am building an iOS app called **RefreshX**, designed for individuals (particularly in the IT sector) who experience health issues in their **eyes**, **back**, and **wrists** due to prolonged screen time and a sedentary digital lifestyle. The app encourages users to take strategic breaks during their workday to perform short, bite-sized exercises targeting these focus areas, reducing physical stress and preventing further health deterioration. RefreshX must be a **native iOS app**, publishable on the **App Store**, developed using **SwiftUI** for the frontend and **Supabase** for the backend, adhering to Apple’s minimalistic design principles, Human Interface Guidelines, and App Store requirements (e.g., privacy, usability). I’m a beginner in iOS development, SwiftUI, and Supabase, with a **50-hour deadline** to deliver a fully functional app. I need detailed, beginner-friendly, step-by-step guidance—including project setup, data models, app logic, UI examples, and backend integration—to create a production-ready app free of logical inconsistencies or errors.
+
+**Current Progress:**
+- **Skills**: I have basic SwiftUI knowledge (e.g., creating simple views) but no experience with Supabase, backend development, or integrating frontend with data models.
+- **UI**: For this prompt, assume no UI is finalized—guide me from scratch. (In reality, I’ve made 7-8 disconnected SwiftUI screens, but let’s restart for consistency.)
+- **Data Models**: I’ve identified conceptual data structures but haven’t implemented them in code yet.
+- **Setup**:
+  - I’ve created an empty Xcode project named **RefreshX** with the Supabase Swift package dependency (version 2.26.0) added via Swift Package Manager.
+  - I’ve set up an empty Supabase project in the Supabase console and added the URL and API key to two files:
+    - **`Supabase.swift`**: Initializes the Supabase client:
+      ```swift
+      import Foundation
+      import Supabase
+
+      let supabase = SupabaseClient(
+          supabaseURL: URL(string: supabaseProjectURL)!,
+          supabaseKey: supabaseAPIKey
+      )
+      ```
+    - **`Constants.swift`**: Stores Supabase credentials:
+      ```swift
+      let supabaseProjectURL = "https://auofkbesgnycewblocxj.supabase.co"
+      let supabaseAPIKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImF1b2ZrYmVzZ255Y2V3YmxvY3hqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDI4OTM4NzEsImV4cCI6MjA1ODQ2OTg3MX0.yIYvlqQGpEkeKXVWXZan-llJTeewfMesl2nGTvlZ02c"
+      ```
+  - **Xcode Project Structure**:
+    ```
+    RefreshX
+    ├── RefreshXApp.swift (Main app entry)
+    ├── ContentView.swift (Default view)
+    ├── Models
+    │   ├── BreakModels.swift
+    │   ├── ContentModels.swift
+    │   ├── DataManager.swift
+    │   ├── Enums.swift
+    │   ├── ExerciseModels.swift
+    │   ├── ProgressModels.swift
+    │   ├── Protocols.swift
+    │   ├── UserModels.swift
+    ├── Services
+    │   ├── Supabase.swift
+    ├── Utils
+    │   ├── Constants.swift
+    ├── Views
+    │   ├── Auth
+    │   │   ├── AuthView.swift
+    │   ├── Exercises
+    │   │   ├── ExercisesView.swift
+    │   ├── Explore
+    │   │   ├── ExploreView.swift
+    │   ├── Home
+    │   │   ├── HomeView.swift
+    │   ├── Profile
+    │   │   ├── ProfileView.swift
+    │   ├── Progress
+    │   │   ├── ProgressView.swift
+    │   ├── Shared
+    │   │   ├── MainTabView.swift
+    ├── Assets.xcassets (Contains AccentColor, AppIcon, appImage, Articles, CardBackground, Exercises, FieldBackground, PrimaryBackground, PrimaryText, SecondaryText)
+    ├── Info.plist
+    ├── README.md
+    ├── temp.txt
+    ├── RefreshXTests
+    │   ├── RefreshXTests.swift
+    ├── RefreshXUITests
+    │   ├── RefreshXUITests.swift
+    │   ├── RefreshXUITestsLaunchTests.swift
+    ├── Package Dependencies (Supabase 2.26.0 + dependencies: swift-asn1, swift-clocks, swift-concurrency-extras, swift-crypto, swift-http-types, xctest-dynamic-overlay)
+    ```
+- **Environment**: I’m using a MacBook with Xcode and the built-in simulator (no physical iPhone). Internet connection is available.
+- **Goal**: Deliver a polished app with a clear user flow, minimal backend reliance, and enriched frontend features (e.g., charts, animations) that work independently if backend setup lags.
+
+**App Purpose and Core Features:**
+RefreshX promotes user health by embedding exercise breaks into their workday, targeting eye, back, and wrist strain. Key features include:
+1. **User Authentication**: Email-based signup/login (name, email, password). Optional: OTP verification and password reset if feasible within 50 hours.
+2. **Break Scheduling**:
+   - Users define work hours (e.g., 7 AM–7 PM), number of breaks (e.g., 4), and break duration (e.g., 15 min).
+   - App sends notifications for breaks at evenly spaced intervals (e.g., every 3 hours over 12 hours), but users can manually start/end breaks anytime.
+   - Breaks are flexible—extra breaks (e.g., 5th) are allowed and tracked.
+3. **Exercise System**:
+   - **Exercise Library**: A read-only catalog of all exercises (e.g., Eye: e1, e2, e3; Back: b1, b2, b3; Wrist: w1, w2, w3) with details (title, duration, focus area, thumbnail, instructions, multimedia). Users can add/remove exercises to/from their **Today’s Routine** but cannot start them here.
+   - **Today’s Routine**: A single, dynamic routine (aka "current routine") pre-populated for new users (e.g., e1, e2, b1, w2) with total duration ≤ break duration. Organized into three subsections: **Eye**, **Back**, **Wrist**. Users can:
+     - Add/remove exercises (total time capped at break duration).
+     - Start all exercises in a subsection or individual ones.
+     - Receive an alert if total time exceeds break duration, prompting adjustment in Profile.
+4. **Progress Tracking**:
+   - **Daily Goal**: Complete Today’s Routine × number of breaks (e.g., 4 times = 100%). Extra breaks increase completion (e.g., 5 breaks = 125%).
+   - Tracks streaks (current, longest), daily/weekly stats (completion %, time spent per category), and displays interactive charts/graphs.
+   - Category-wise progress (Eye, Back, Wrist) with fun facts (e.g., “30 min/week on back exercises improves posture” when criteria met).
+5. **Explore Section**: A standalone article library (e.g., eye care, wellness) with search, sort (by date, read time), tags (all, eye, back, wrist, wellness, favorites), and read/favorite toggles. No relation to exercises/breaks.
+6. **Profile**: User info (name, email, DOB, profile picture), break schedule settings, and account actions (sign out, delete account with confirmation).
+
+**Detailed User Flow:**
+1. **Onboarding**:
+   - **Signup**: User enters name, email, password; account created via Supabase.
+   - **Login**: Email/password authentication; redirects to Home if successful.
+   - **Setup**: Post-login, users input break preferences:
+     - Weekdays (default: 5), job start/end time (default: 9 AM–6 PM), number of breaks (default: 4), break duration (default: 15 min).
+     - App computes a recommended break duration (e.g., total work hours ÷ number of breaks) but allows manual override.
+
+2. **Home Screen**:
+   - **Top Section**:
+     - Timer counting down to the next scheduled break (e.g., “Next break in 2h 45m”).
+     - “Start Break” button (toggles to “End Break” when active).
+     - Summary (e.g., “4 breaks, 15 min each”).
+   - **Today’s Routine**:
+     - Parent section with collapsible subsections: Eye, Back, Wrist.
+     - Each subsection lists exercises (e.g., Eye: e1 (2 min), e2 (3 min)) with:
+       - Individual start buttons (plays one exercise).
+       - Subsection start button (plays all sequentially).
+     - Add/remove exercises via a “+” button (links to Exercise Library) or swipe-to-delete, with a time cap alert.
+   - **Progress Overview**:
+     - Current streak (e.g., “3 days”), daily goal % (e.g., “75%”), weekly growth (e.g., “+12% vs. last week”).
+     - Tappable for detailed view: daily/weekly stats, category-wise breakdown (Eye: 5/10 min today), charts, and motivational facts.
+   - **Notifications**:
+     - Break reminders (e.g., 7 AM–7 PM, 4 breaks = 9:00, 12:00, 15:00, 18:00).
+     - Users can ignore reminders and start breaks manually anytime.
+
+3. **Exercise Execution**:
+   - **Starting**:
+     - “Start Break” triggers Today’s Routine (all subsections sequentially).
+     - Subsection start plays its exercises (e.g., Eye: e1 → e2).
+     - Individual exercise start plays just that exercise.
+   - **Behavior**: Exercises display timers (like fitness apps) with play/pause controls. Completion updates progress.
+   - **Edge Case**: Starting an exercise without a break auto-starts the break; ending the break (or closing the app) stops it.
+
+4. **Exercise Library**:
+   - Displays all exercises (e.g., 9 total: 3 Eye, 3 Back, 3 Wrist) with filters (all, eye, back, wrist) and details (e.g., “Eye Stretch”, 2 min, thumbnail, video link).
+   - “Add to Routine” or “Remove from Routine” buttons toggle inclusion in Today’s Routine.
+
+5. **Explore Section**:
+   - Article list with:
+     - Recommended section (unread, trending).
+     - Tags (all, eye, back, wrist, wellness, favorites).
+     - Search (by title, author, focus) and sort (date, read time).
+   - Article view: title, author, read time, content, thumbnail, link, read/favorite toggles.
+
+6. **Profile**:
+   - **User Info**: Editable (name, DOB, profile picture); fixed (email).
+   - **Break Schedule**: Edit weekdays, start/end time, number of breaks, break duration (with computed suggestion).
+   - **Actions**: Sign out, delete account (with confirmation alerts).
+
+**Technical Requirements:**
+- **Frontend**:
+  - SwiftUI with minimalistic, Apple-style UI (e.g., clean typography, subtle animations).
+  - Multimedia support (images, videos, URLs) for exercises/articles.
+  - Simulator-compatible (Xcode 15+ recommended).
+  - Accessibility features (e.g., VoiceOver support) if time allows.
+- **Backend**:
+  - Supabase for:
+    - User authentication (email/password).
+    - Storage of exercises, routines, articles, and progress (minimal tables).
+  - Fallback: Hardcode sample data in a DataManager if backend setup exceeds time.
+- **Data Models**: Future-proof, Swift-native, and minimal:
+  - **User**:
+    - UUID, name, email, password, DOB, breakSettings (weekdays, jobStartTime, jobEndTime, numBreaks, breakDuration), routineID, notifications (array), progress (struct).
+  - **Exercise**:
+    - ID, title, duration (minutes), description, thumbnailURL, mainImageURL, reps (optional), sets (optional), instructions, focusArea (enum: eye, back, wrist), tips, commonMistakes, link, videoURL.
+  - **Routine**:
+    - ID, exerciseIDs (array), totalTime (computed), focusAreas (derived).
+  - **Article**:
+    - UUID, title, author, readTime (minutes), focusArea (enum: eye, back, wrist, wellness), content, thumbnailURL, link, isRead, isFavorite, addedDate.
+  - **Notification**:
+    - UUID, title, text, isRead, timestamp.
+  - **Progress**:
+    - dailyGoal (float), currentStreak, longestStreak, categoryStats (eye/back/wrist: timeToday, timeThisWeek, completions), weeklyTrends (array).
+- **Logic**:
+  - **Routine**: Auto-populate for new users (e.g., 1-2 exercises per category, total ≤ break duration).
+  - **Notifications**: Calculate break intervals (e.g., 12-hour day ÷ 4 breaks = every 3 hours) and use UNUserNotificationCenter.
+  - **Progress**: Update on exercise completion; compute % based on routine × breaks.
+- **Constraints**: No errors, optimized for 50 hours, App Store-compliant (e.g., privacy policy, no crashes).
+
+**What I Need from You:**
+1. **Step-by-Step Guidance**:
+   - Enhance my Xcode project structure (e.g., add missing files, organize).
+   - Define complete data models in Swift (structs, enums, computed properties, Codable conformance).
+   - Create basic SwiftUI views (e.g., HomeView with timer, Today’s Routine with subsections) linked to models.
+   - Implement logic: break timer, notification scheduling, routine editing, progress updates.
+2. **Code Examples**:
+   - Minimal, extensible code (e.g., DataManager with 2 exercises, 1 article).
+   - Example: Home screen with timer and Today’s Routine subsection.
+3. **Supabase Setup**:
+   - Minimal setup: auth table, exercises table, routines table.
+   - Fallback: Local storage (UserDefaults) or hardcoded data if backend delays.
+4. **Corrections**:
+   - Fix logical flaws (e.g., if break duration logic conflicts with routine time).
+   - Warn about feasibility (e.g., video playback in 50 hours).
+5. **Timeline Optimization**:
+   - Prioritize: Authentication, Home, Today’s Routine, Progress (core app).
+   - Defer: Explore, advanced animations if time runs out.
+
+**Additional Notes:**
+- Use minimal sample data (e.g., 2 exercises: “Eye Blink” (2 min), “Wrist Twist” (3 min); 1 article: “Eye Care Tips”).
+- Add cool features if time permits: SwiftUI charts, subtle animations (e.g., button pulse), accessibility (e.g., dynamic type).
+- Ensure simulator compatibility (e.g., iPhone 15 Pro, iOS 18).
+- Keep flexible for future additions (e.g., calorie tracking, MET values, social sharing).
+- Avoid overcomplicating (e.g., no unnecessary backend sync if local works).
+
+**Deadline Context:**
+I’ve delayed the client with incomplete work and now face a hard 50-hour deadline (starting March 26, 2025). Guide me as if I’m starting fresh—no finalized UI or backend—correcting mistakes instantly to deliver a fully functional, App Store-ready app.
+
+---
+
+### Enhancements Added:
+1. **Project Setup**: Detailed Xcode structure, Supabase initialization, and package dependencies for clarity.
+2. **User Flow**: Clarified break flexibility, exercise execution edge cases, and notification timing.
+3. **Technical Details**: Added accessibility, multimedia specifics, and Supabase table suggestions.
+4. **Data Models**: Expanded properties (e.g., URLs, timestamps) and logic (e.g., notification intervals).
+5. **Guidance**: Specified view examples, fallback options, and prioritization.
+6. **Notes**: Emphasized minimalism, flexibility, and simulator focus.
