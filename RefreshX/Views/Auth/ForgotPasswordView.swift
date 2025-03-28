@@ -5,6 +5,7 @@
 //  Created by student-2 on 26/03/25.
 //
 
+
 import SwiftUI
 
 struct ForgotPasswordView: View {
@@ -17,8 +18,11 @@ struct ForgotPasswordView: View {
     var onSendCodeSuccess: (String) -> Void
     var onSendCodeError: (String) -> Void
     
+    // In a real app, this would be verified against the database
+    private let existingEmails = ["john@example.com"]
+    
     var body: some View {
-        VStack(spacing: 20) {
+        VStack(spacing: 24) {
             Text("Reset Password")
                 .font(.system(size: 28, weight: .semibold, design: .rounded))
                 .foregroundColor(Color("PrimaryText"))
@@ -30,15 +34,16 @@ struct ForgotPasswordView: View {
                 .frame(maxWidth: .infinity, alignment: .leading)
             
             // Email field
-            VStack(alignment: .leading, spacing: 6) {
+            VStack(alignment: .leading, spacing: 8) {
                 Text("Email")
                     .font(.system(size: 16, weight: .medium))
                     .foregroundColor(Color("PrimaryText"))
                 
-                TextField("", text: $email, prompt: Text("your@email.com").foregroundColor(.gray))
+                TextField("", text: $email, prompt: Text("your@email.com").foregroundStyle(.gray))
                     .autocapitalization(.none)
                     .keyboardType(.emailAddress)
                     .textContentType(.emailAddress)
+                    .submitLabel(.done)
                     .padding()
                     .background(Color("FieldBackground"))
                     .cornerRadius(10)
@@ -46,9 +51,11 @@ struct ForgotPasswordView: View {
                         RoundedRectangle(cornerRadius: 10)
                             .stroke(isEmailValid ? Color.gray.opacity(0.2) : Color.red, lineWidth: 1)
                     )
-                    .onChange(of: email) { isEmailValid = User.isValidEmail(email) }
+                    .onChange(of: email) {
+                        isEmailValid = email.isEmpty || User.isValidEmail(email)
+                    }
                 
-                if !isEmailValid && !email.isEmpty {
+                if !isEmailValid {
                     Text("Please enter a valid email address")
                         .font(.system(size: 12))
                         .foregroundColor(.red)
@@ -76,6 +83,7 @@ struct ForgotPasswordView: View {
                 .cornerRadius(12)
             }
             .disabled(!isFormValid || isLoading)
+            .padding(.top, 12)
             
             // Back to login
             Button(action: onBackToLogin) {
@@ -88,6 +96,8 @@ struct ForgotPasswordView: View {
                 .foregroundColor(Color("AccentColor"))
             }
             .padding(.top, 20)
+            
+            Spacer()
         }
     }
     
@@ -101,12 +111,14 @@ struct ForgotPasswordView: View {
             rotationAngle = 360
         }
         
-        // Simulate SMTP/Backend call
+        // Simulate backend call - in a real app, this would:
+        // 1. Verify the email exists in the database
+        // 2. Send an OTP via email (using a service like SendGrid or a Supabase function)
         DispatchQueue.main.asyncAfter(deadline: .now() + 1.5) {
             isLoading = false
             rotationAngle = 0
             
-            let existingEmails = ["john@example.com"]
+            // Check if the email exists in our database (simulated)
             if existingEmails.contains(email.lowercased()) {
                 onSendCodeSuccess(email)
             } else {
@@ -115,3 +127,13 @@ struct ForgotPasswordView: View {
         }
     }
 }
+
+#Preview {
+    ForgotPasswordView(
+        onBackToLogin: {},
+        onSendCodeSuccess: { _ in },
+        onSendCodeError: { _ in }
+    )
+    .padding()
+}
+

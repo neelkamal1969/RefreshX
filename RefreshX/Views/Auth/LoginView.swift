@@ -5,6 +5,7 @@
 //  Created by student-2 on 26/03/25.
 //
 
+
 import SwiftUI
 
 struct LoginView: View {
@@ -21,22 +22,24 @@ struct LoginView: View {
     var onLoginError: (String) -> Void
     
     var body: some View {
-        VStack(spacing: 20) {
+        VStack(spacing: 24) {
+            // Header
             Text("Welcome Back")
                 .font(.system(size: 28, weight: .semibold, design: .rounded))
                 .foregroundColor(Color("PrimaryText"))
                 .frame(maxWidth: .infinity, alignment: .leading)
             
             // Email field
-            VStack(alignment: .leading, spacing: 6) {
+            VStack(alignment: .leading, spacing: 8) {
                 Text("Email")
                     .font(.system(size: 16, weight: .medium))
                     .foregroundColor(Color("PrimaryText"))
                 
-                TextField("", text: $email, prompt: Text("your@email.com").foregroundColor(.gray))
+                TextField("", text: $email, prompt: Text("your@email.com").foregroundStyle(.gray))
                     .autocapitalization(.none)
                     .keyboardType(.emailAddress)
                     .textContentType(.emailAddress)
+                    .submitLabel(.next)
                     .padding()
                     .background(Color("FieldBackground"))
                     .cornerRadius(10)
@@ -44,11 +47,11 @@ struct LoginView: View {
                         RoundedRectangle(cornerRadius: 10)
                             .stroke(isEmailValid ? Color.gray.opacity(0.2) : Color.red, lineWidth: 1)
                     )
-                    .onChange(of: email) { newValue in
-                        isEmailValid = User.isValidEmail(newValue)
+                    .onChange(of: email) {
+                        isEmailValid = email.isEmpty || User.isValidEmail(email)
                     }
                 
-                if !isEmailValid && !email.isEmpty {
+                if !isEmailValid {
                     Text("Please enter a valid email address")
                         .font(.system(size: 12))
                         .foregroundColor(.red)
@@ -56,25 +59,28 @@ struct LoginView: View {
             }
             
             // Password field
-            VStack(alignment: .leading, spacing: 6) {
+            VStack(alignment: .leading, spacing: 8) {
                 Text("Password")
                     .font(.system(size: 16, weight: .medium))
                     .foregroundColor(Color("PrimaryText"))
                 
                 HStack {
                     if isShowingPassword {
-                        TextField("", text: $password, prompt: Text("Enter your password").foregroundColor(.gray))
+                        TextField("", text: $password, prompt: Text("Enter your password").foregroundStyle(.gray))
                             .autocapitalization(.none)
                             .textContentType(.password)
+                            .submitLabel(.go)
                     } else {
-                        SecureField("", text: $password, prompt: Text("Enter your password").foregroundColor(.gray))
+                        SecureField("", text: $password, prompt: Text("Enter your password").foregroundStyle(.gray))
                             .textContentType(.password)
+                            .submitLabel(.go)
                     }
                     
                     Button(action: { isShowingPassword.toggle() }) {
                         Image(systemName: isShowingPassword ? "eye.slash.fill" : "eye.fill")
                             .foregroundColor(.gray)
                     }
+                    .padding(.trailing, 8)
                 }
                 .padding()
                 .background(Color("FieldBackground"))
@@ -94,6 +100,7 @@ struct LoginView: View {
                         .foregroundColor(Color("AccentColor"))
                 }
             }
+            .padding(.top, -8)
             
             // Sign in button
             Button(action: handleLogin) {
@@ -116,6 +123,7 @@ struct LoginView: View {
                 .cornerRadius(12)
             }
             .disabled(!isFormValid || isLoading)
+            .padding(.top, 12)
             
             // Sign up option
             HStack {
@@ -143,11 +151,12 @@ struct LoginView: View {
             rotationAngle = 360
         }
         
-        // Simulate backend call
+        // Simulate backend call - integrate with Supabase in the future
         DispatchQueue.main.asyncAfter(deadline: .now() + 1.5) {
             isLoading = false
             rotationAngle = 0
             
+            // Demo login for now - replace with actual authentication
             if email == "john@example.com" && password == "password123" {
                 do {
                     let user = try User(
@@ -161,8 +170,22 @@ struct LoginView: View {
                     onLoginError(error.localizedDescription)
                 }
             } else {
+                // For a real app, this would check with Supabase
                 onLoginError("Invalid email or password")
             }
         }
     }
 }
+
+#Preview {
+    LoginView(
+        onSignUp: {},
+        onForgotPassword: {},
+        onLoginSuccess: { _ in },
+        onLoginError: { _ in }
+    )
+    .padding()
+    .previewLayout(.sizeThatFits)
+}
+
+

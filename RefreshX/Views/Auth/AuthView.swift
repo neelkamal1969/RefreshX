@@ -1,9 +1,9 @@
-////
-////  AuthView.swift
-////  RefreshX
-////
-////  Created by student-2 on 25/03/25.
-////
+//
+//  AuthView.swift
+//  RefreshX
+//
+//  Created by student-2 on 25/03/25.
+//
 
 import SwiftUI
 
@@ -27,85 +27,92 @@ struct AuthView: View {
             Color("PrimaryBackground")
                 .ignoresSafeArea()
             
-            VStack(spacing: 0) {
-                // Removed app image and name, using padding for top spacing
-                VStack(spacing: 20) {
-                    switch authState {
-                    case .login:
-                        LoginView(
-                            onSignUp: { authState = .signup },
-                            onForgotPassword: { authState = .forgotPassword },
-                            onLoginSuccess: { user in
-                                dataManager.setCurrentUser(user)
-                            },
-                            onLoginError: { error in
-                                alertItem = AlertItem(title: "Login Failed", message: error, buttonText: "OK")
-                                showAlert = true
-                            }
-                        )
-                    case .signup:
-                        SignUpView(
-                            onBackToLogin: { authState = .login },
-                            onSignUpSuccess: { user in
-                                dataManager.setCurrentUser(user)
-                                alertItem = AlertItem(title: "Success", message: "Account created successfully!", buttonText: "Continue")
-                                showAlert = true
-                            },
-                            onSignUpError: { error in
-                                alertItem = AlertItem(title: "Sign Up Failed", message: error, buttonText: "OK")
-                                showAlert = true
-                            }
-                        )
-                    case .forgotPassword:
-                        ForgotPasswordView(
-                            onBackToLogin: { authState = .login },
-                            onSendCodeSuccess: { email in
-                                authState = .otpVerification(email: email)
-                            },
-                            onSendCodeError: { error in
-                                alertItem = AlertItem(title: "Error", message: error, buttonText: "OK")
-                                showAlert = true
-                            }
-                        )
-                    case .otpVerification(let email):
-                        OTPVerificationView(
-                            email: email,
-                            onBackToForgotPassword: { authState = .forgotPassword },
-                            onVerificationSuccess: { otp in
-                                authState = .resetPassword(email: email, otp: otp)
-                            },
-                            onVerificationError: { error in
-                                alertItem = AlertItem(title: "Verification Failed", message: error, buttonText: "OK")
-                                showAlert = true
-                            }
-                        )
-                    case .resetPassword(let email, let otp):
-                        ResetPasswordView(
-                            email: email,
-                            otp: otp,
-                            onBackToLogin: { authState = .login },
-                            onResetSuccess: {
-                                alertItem = AlertItem(title: "Success", message: "Password reset successfully!", buttonText: "Login")
-                                showAlert = true
-                                authState = .login
-                            },
-                            onResetError: { error in
-                                alertItem = AlertItem(title: "Reset Failed", message: error, buttonText: "OK")
-                                showAlert = true
-                            }
-                        )
+            ScrollView {
+                VStack(spacing: 0) {
+                    Spacer(minLength: 60)
+                    
+                    VStack(spacing: 20) {
+                        switch authState {
+                        case .login:
+                            LoginView(
+                                onSignUp: { authState = .signup },
+                                onForgotPassword: { authState = .forgotPassword },
+                                onLoginSuccess: { user in
+                                    dataManager.setCurrentUser(user)
+                                },
+                                onLoginError: { error in
+                                    alertItem = AlertItem(title: "Login Failed", message: error, buttonText: "OK")
+                                    showAlert = true
+                                }
+                            )
+                        case .signup:
+                            SignUpView(
+                                onBackToLogin: { authState = .login },
+                                onSignUpSuccess: { user in
+                                    dataManager.setCurrentUser(user)
+                                    alertItem = AlertItem(title: "Success", message: "Account created successfully!", buttonText: "Continue")
+                                    showAlert = true
+                                },
+                                onSignUpError: { error in
+                                    alertItem = AlertItem(title: "Sign Up Failed", message: error, buttonText: "OK")
+                                    showAlert = true
+                                }
+                            )
+                        case .forgotPassword:
+                            ForgotPasswordView(
+                                onBackToLogin: { authState = .login },
+                                onSendCodeSuccess: { email in
+                                    authState = .otpVerification(email: email)
+                                },
+                                onSendCodeError: { error in
+                                    alertItem = AlertItem(title: "Error", message: error, buttonText: "OK")
+                                    showAlert = true
+                                }
+                            )
+                        case .otpVerification(let email):
+                            OTPVerificationView(
+                                email: email,
+                                onBackToForgotPassword: { authState = .forgotPassword },
+                                onVerificationSuccess: { otp in
+                                    authState = .resetPassword(email: email, otp: otp)
+                                },
+                                onVerificationError: { error in
+                                    alertItem = AlertItem(title: "Verification Failed", message: error, buttonText: "OK")
+                                    showAlert = true
+                                }
+                            )
+                        case .resetPassword(let email, let otp):
+                            ResetPasswordView(
+                                email: email,
+                                otp: otp,
+                                onBackToLogin: { authState = .login },
+                                onResetSuccess: {
+                                    alertItem = AlertItem(title: "Success", message: "Password reset successfully!", buttonText: "Login")
+                                    showAlert = true
+                                    authState = .login
+                                },
+                                onResetError: { error in
+                                    alertItem = AlertItem(title: "Reset Failed", message: error, buttonText: "OK")
+                                    showAlert = true
+                                }
+                            )
+                        }
                     }
+                    .padding(.horizontal, 16)
+                    .padding(.bottom, 40)
                 }
-                .padding(.horizontal, 16)
-                .padding(.bottom, 40)
             }
-        }
-        .alert(isPresented: $showAlert) {
-            Alert(
-                title: Text(alertItem?.title ?? ""),
-                message: Text(alertItem?.message ?? ""),
-                dismissButton: .default(Text(alertItem?.buttonText ?? "OK"))
-            )
+            .alert(isPresented: $showAlert) {
+                Alert(
+                    title: Text(alertItem?.title ?? ""),
+                    message: Text(alertItem?.message ?? ""),
+                    dismissButton: .default(Text(alertItem?.buttonText ?? "OK"))
+                )
+            }
+            // Dismiss keyboard when tapping outside of a text field
+            .onTapGesture {
+                UIApplication.shared.sendAction(#selector(UIResponder.resignFirstResponder), to: nil, from: nil, for: nil)
+            }
         }
     }
 }

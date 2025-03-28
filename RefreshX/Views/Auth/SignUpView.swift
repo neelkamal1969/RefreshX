@@ -3,6 +3,8 @@
 //  RefreshX
 //
 //  Created by student-2 on 26/03/25.
+
+
 import SwiftUI
 
 struct SignUpView: View {
@@ -28,7 +30,9 @@ struct SignUpView: View {
     var onSignUpSuccess: (User) -> Void
     var onSignUpError: (String) -> Void
     
+    // Min age is 3 years
     private let minimumDate = Calendar.current.date(byAdding: .year, value: -3, to: Date()) ?? Date()
+    private let existingEmails = ["john@example.com"] // In real app, this would be checked with Supabase
     
     var body: some View {
         ScrollView {
@@ -44,12 +48,15 @@ struct SignUpView: View {
             }
             .padding(.vertical, 20)
         }
-        .overlay(passwordInfoOverlay)
-        .onChange(of: password) { _ in updatePasswordValidation() }
-        .onChange(of: confirmPassword) { _ in isPasswordMatching = password == confirmPassword }
-        // Dismiss password info when tapping outside
+        .onChange(of: password) { updatePasswordValidation() }
+        .onChange(of: confirmPassword) { isPasswordMatching = password == confirmPassword }
+        // Dismiss keyboard when tapping outside
         .onTapGesture {
-            showPasswordInfo = false
+            UIApplication.shared.sendAction(#selector(UIResponder.resignFirstResponder), to: nil, from: nil, for: nil)
+        }
+        .sheet(isPresented: $showPasswordInfo) {
+            PasswordInfoSheet()
+                .presentationDetents([.height(250)])
         }
     }
     
@@ -63,12 +70,14 @@ struct SignUpView: View {
     }
     
     private var nameField: some View {
-        VStack(alignment: .leading, spacing: 6) {
+        VStack(alignment: .leading, spacing: 8) {
             Text("Full Name")
                 .font(.system(size: 16, weight: .medium))
                 .foregroundColor(Color("PrimaryText"))
             
-            TextField("", text: $name, prompt: Text("Enter your name").foregroundColor(.gray))
+            TextField("", text: $name, prompt: Text("Enter your name").foregroundStyle(.gray))
+                .textContentType(.name)
+                .submitLabel(.next)
                 .padding()
                 .background(Color("FieldBackground"))
                 .cornerRadius(10)
@@ -76,9 +85,9 @@ struct SignUpView: View {
                     RoundedRectangle(cornerRadius: 10)
                         .stroke(isNameValid ? Color.gray.opacity(0.2) : Color.red, lineWidth: 1)
                 )
-                .onChange(of: name) { isNameValid = name.count >= 3 }
+                .onChange(of: name) { isNameValid = name.isEmpty || name.count >= 3 }
             
-            if !isNameValid && !name.isEmpty {
+            if !isNameValid {
                 Text("Name must be at least 3 characters")
                     .font(.system(size: 12))
                     .foregroundColor(.red)
@@ -87,49 +96,45 @@ struct SignUpView: View {
     }
     
     private var dateOfBirthField: some View {
-        VStack(alignment: .leading, spacing: 6) {
-            HStack(alignment: .center, spacing: 10) {
+        VStack(alignment: .leading, spacing: 8) {
+            HStack {
                 Text("Date of Birth")
                     .font(.system(size: 16, weight: .medium))
-                    .foregroundColor(Color("PrimaryText"))
-                    .frame(width: 120, alignment: .leading)
+                    .foregroundColor(.black)
                 
-                DatePicker("", selection: $dateOfBirth, in: ...minimumDate, displayedComponents: .date)
+                Spacer()
+                
+                // Only the DatePicker with its own background
+                DatePicker("", selection: $dateOfBirth, in: ...Date(), displayedComponents: .date)
                     .datePickerStyle(.compact)
                     .labelsHidden()
-                    .frame(maxWidth: .infinity)
-                    .padding(8)
-                    .background(Color("FieldBackground"))
-                    .cornerRadius(10)
-                    .overlay(
-                        RoundedRectangle(cornerRadius: 10)
-                            .stroke(isAgeValid ? Color.gray.opacity(0.2) : Color.red, lineWidth: 1)
-                    )
+                    .accentColor(Color.blue)
+                    .onChange(of: dateOfBirth) {
+                        let ageComponents = Calendar.current.dateComponents([.year], from: dateOfBirth, to: Date())
+                        isAgeValid = (ageComponents.year ?? 0) >= 3
+                    }
             }
-            .onChange(of: dateOfBirth) {
-                let ageComponents = Calendar.current.dateComponents([.year], from: dateOfBirth, to: Date())
-                isAgeValid = (ageComponents.year ?? 0) >= 3
-            }
+            .padding(.vertical, 4)
             
             if !isAgeValid {
                 Text("You must be at least 3 years old")
                     .font(.system(size: 12))
                     .foregroundColor(.red)
-                    .padding(.leading, 130) // Align error message with DatePicker
             }
         }
     }
     
     private var emailField: some View {
-        VStack(alignment: .leading, spacing: 6) {
+        VStack(alignment: .leading, spacing: 8) {
             Text("Email")
                 .font(.system(size: 16, weight: .medium))
                 .foregroundColor(Color("PrimaryText"))
             
-            TextField("", text: $email, prompt: Text("your@email.com").foregroundColor(.gray))
+            TextField("", text: $email, prompt: Text("your@email.com").foregroundStyle(.gray))
                 .autocapitalization(.none)
                 .keyboardType(.emailAddress)
                 .textContentType(.emailAddress)
+                .submitLabel(.next)
                 .padding()
                 .background(Color("FieldBackground"))
                 .cornerRadius(10)
@@ -137,9 +142,11 @@ struct SignUpView: View {
                     RoundedRectangle(cornerRadius: 10)
                         .stroke(isEmailValid ? Color.gray.opacity(0.2) : Color.red, lineWidth: 1)
                 )
-                .onChange(of: email) { isEmailValid = User.isValidEmail(email) }
+                .onChange(of: email) {
+                    isEmailValid = email.isEmpty || User.isValidEmail(email)
+                }
             
-            if !isEmailValid && !email.isEmpty {
+            if !isEmailValid {
                 Text("Please enter a valid email address")
                     .font(.system(size: 12))
                     .foregroundColor(.red)
@@ -148,7 +155,7 @@ struct SignUpView: View {
     }
     
     private var passwordField: some View {
-        VStack(alignment: .leading, spacing: 6) {
+        VStack(alignment: .leading, spacing: 8) {
             HStack {
                 Text("Password")
                     .font(.system(size: 16, weight: .medium))
@@ -156,24 +163,31 @@ struct SignUpView: View {
                 
                 Spacer()
                 
-                Button(action: { showPasswordInfo.toggle() }) {
+                Button(action: {
+                    showPasswordInfo.toggle()
+                }) {
                     Image(systemName: "info.circle")
-                        .foregroundColor(.gray)
+                        .foregroundColor(Color("AccentColor"))
                 }
             }
             
             HStack {
                 if isShowingPassword {
-                    TextField("", text: $password, prompt: Text("Create password").foregroundColor(.gray))
+                    TextField("", text: $password, prompt: Text("Create password").foregroundStyle(.gray))
                         .autocapitalization(.none)
+                        .textContentType(.newPassword)
+                        .submitLabel(.next)
                 } else {
-                    SecureField("", text: $password, prompt: Text("Create password").foregroundColor(.gray))
+                    SecureField("", text: $password, prompt: Text("Create password").foregroundStyle(.gray))
+                        .textContentType(.newPassword)
+                        .submitLabel(.next)
                 }
                 
                 Button(action: { isShowingPassword.toggle() }) {
                     Image(systemName: isShowingPassword ? "eye.slash.fill" : "eye.fill")
                         .foregroundColor(.gray)
                 }
+                .padding(.trailing, 8)
             }
             .padding()
             .background(Color("FieldBackground"))
@@ -193,23 +207,28 @@ struct SignUpView: View {
     }
     
     private var confirmPasswordField: some View {
-        VStack(alignment: .leading, spacing: 6) {
+        VStack(alignment: .leading, spacing: 8) {
             Text("Confirm Password")
                 .font(.system(size: 16, weight: .medium))
                 .foregroundColor(Color("PrimaryText"))
             
             HStack {
                 if isShowingConfirmPassword {
-                    TextField("", text: $confirmPassword, prompt: Text("Confirm password").foregroundColor(.gray))
+                    TextField("", text: $confirmPassword, prompt: Text("Confirm password").foregroundStyle(.gray))
                         .autocapitalization(.none)
+                        .textContentType(.newPassword)
+                        .submitLabel(.done)
                 } else {
-                    SecureField("", text: $confirmPassword, prompt: Text("Confirm password").foregroundColor(.gray))
+                    SecureField("", text: $confirmPassword, prompt: Text("Confirm password").foregroundStyle(.gray))
+                        .textContentType(.newPassword)
+                        .submitLabel(.done)
                 }
                 
                 Button(action: { isShowingConfirmPassword.toggle() }) {
                     Image(systemName: isShowingConfirmPassword ? "eye.slash.fill" : "eye.fill")
                         .foregroundColor(.gray)
                 }
+                .padding(.trailing, 8)
             }
             .padding()
             .background(Color("FieldBackground"))
@@ -248,6 +267,7 @@ struct SignUpView: View {
             .cornerRadius(12)
         }
         .disabled(!isFormValid || isLoading)
+        .padding(.top, 12)
     }
     
     private var loginOption: some View {
@@ -265,26 +285,17 @@ struct SignUpView: View {
         .padding(.top, 20)
     }
     
-    private var passwordInfoOverlay: some View {
-        Group {
-            if showPasswordInfo {
-                PasswordInfoOverlay()
-                    .position(x: UIScreen.main.bounds.width / 2, y: UIScreen.main.bounds.height / 2 - 100) // Center it slightly above middle
-                    .transition(.opacity)
-            }
-        }
-    }
-    
     // MARK: - Validation Logic
     
     private var isFormValid: Bool {
         let fieldsNotEmpty = !name.isEmpty && !email.isEmpty && !password.isEmpty && !confirmPassword.isEmpty
         let validations = isNameValid && isEmailValid && isPasswordValid && isPasswordMatching && isAgeValid
-        return fieldsNotEmpty && validations
+        let passwordValid = password.isValidPassword
+        return fieldsNotEmpty && validations && passwordValid
     }
     
     private func updatePasswordValidation() {
-        isPasswordValid = password.isValidPassword
+        isPasswordValid = password.isEmpty || password.isValidPassword
         isPasswordMatching = password == confirmPassword
     }
     
@@ -295,6 +306,18 @@ struct SignUpView: View {
         withAnimation(.linear(duration: 1).repeatForever(autoreverses: false)) {
             rotationAngle = 360
         }
+        
+        // Check if email already exists (in a real app, this would check with Supabase)
+        if existingEmails.contains(email.lowercased()) {
+            DispatchQueue.main.asyncAfter(deadline: .now() + 1.5) {
+                isLoading = false
+                rotationAngle = 0
+                onSignUpError("An account with this email already exists")
+            }
+            return
+        }
+        
+        // In a real implementation, we would also verify the email is valid/exists via API
         
         // Simulate backend call
         DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
@@ -311,6 +334,7 @@ struct SignUpView: View {
                     numberOfBreaksPreferred: 4,
                     breakDuration: 15
                 )
+                // With Supabase, we would create the user in the database here
                 onSignUpSuccess(user)
             } catch {
                 onSignUpError(error.localizedDescription)
@@ -319,28 +343,27 @@ struct SignUpView: View {
     }
 }
 
-struct PasswordInfoOverlay: View {
+
+
+struct PasswordRequirementRow: View {
+    let text: String
+    
     var body: some View {
-        VStack(spacing: 10) {
-            Text("Password Requirements")
-                .font(.headline)
-            Text("• At least 6 characters\n• 1 uppercase letter\n• 1 lowercase letter\n• 1 number\n• 1 special character")
-                .font(.subheadline)
-                .multilineTextAlignment(.leading)
+        HStack(spacing: 8) {
+            Image(systemName: "checkmark.circle.fill")
+                .foregroundColor(Color("AccentColor"))
+            Text(text)
+                .foregroundColor(Color("PrimaryText"))
+            Spacer()
         }
-        .padding()
-        .background(Color("FieldBackground"))
-        .cornerRadius(10)
-        .shadow(radius: 5)
     }
 }
 
-struct SignUpView_Previews: PreviewProvider {
-    static var previews: some View {
-        SignUpView(
-            onBackToLogin: {},
-            onSignUpSuccess: { _ in },
-            onSignUpError: { _ in }
-        )
-    }
+#Preview {
+    SignUpView(
+        onBackToLogin: {},
+        onSignUpSuccess: { _ in },
+        onSignUpError: { _ in }
+    )
+    .padding()
 }

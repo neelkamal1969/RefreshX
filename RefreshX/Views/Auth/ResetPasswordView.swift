@@ -3,7 +3,7 @@
 //  RefreshX
 //
 //  Created by student-2 on 26/03/25.
-//
+
 
 import SwiftUI
 
@@ -22,37 +22,60 @@ struct ResetPasswordView: View {
     @State private var isPasswordMatching = true
     @State private var isLoading = false
     @State private var rotationAngle: Double = 0
+    @State private var showPasswordInfo = false
     
     var body: some View {
-        VStack(spacing: 20) {
+        VStack(spacing: 24) {
             Text("Set New Password")
                 .font(.system(size: 28, weight: .semibold, design: .rounded))
                 .foregroundColor(Color("PrimaryText"))
                 .frame(maxWidth: .infinity, alignment: .leading)
             
-            Text("Enter your new password for \(email)")
-                .font(.system(size: 16))
-                .foregroundColor(Color("SecondaryText"))
-                .frame(maxWidth: .infinity, alignment: .leading)
-            
-            // New Password field
-            VStack(alignment: .leading, spacing: 6) {
-                Text("New Password")
+            VStack(alignment: .leading, spacing: 8) {
+                Text("Enter your new password for")
+                    .font(.system(size: 16))
+                    .foregroundColor(Color("SecondaryText"))
+                
+                Text(email)
                     .font(.system(size: 16, weight: .medium))
                     .foregroundColor(Color("PrimaryText"))
+            }
+            .frame(maxWidth: .infinity, alignment: .leading)
+            
+            // New Password field
+            VStack(alignment: .leading, spacing: 8) {
+                HStack {
+                    Text("New Password")
+                        .font(.system(size: 16, weight: .medium))
+                        .foregroundColor(Color("PrimaryText"))
+                    
+                    Spacer()
+                    
+                    Button(action: {
+                        showPasswordInfo.toggle()
+                    }) {
+                        Image(systemName: "info.circle")
+                            .foregroundColor(Color("AccentColor"))
+                    }
+                }
                 
                 HStack {
                     if isShowingNewPassword {
-                        TextField("", text: $newPassword, prompt: Text("Enter new password").foregroundColor(.gray))
+                        TextField("Enter new password", text: $newPassword)
                             .autocapitalization(.none)
+                            .textContentType(.newPassword)
+                            .submitLabel(.next)
                     } else {
-                        SecureField("", text: $newPassword, prompt: Text("Enter new password").foregroundColor(.gray))
+                        SecureField("Enter new password", text: $newPassword)
+                            .textContentType(.newPassword)
+                            .submitLabel(.next)
                     }
                     
                     Button(action: { isShowingNewPassword.toggle() }) {
                         Image(systemName: isShowingNewPassword ? "eye.slash.fill" : "eye.fill")
                             .foregroundColor(.gray)
                     }
+                    .padding(.trailing, 8)
                 }
                 .padding()
                 .background(Color("FieldBackground"))
@@ -71,23 +94,28 @@ struct ResetPasswordView: View {
             }
             
             // Confirm Password field
-            VStack(alignment: .leading, spacing: 6) {
+            VStack(alignment: .leading, spacing: 8) {
                 Text("Confirm Password")
                     .font(.system(size: 16, weight: .medium))
                     .foregroundColor(Color("PrimaryText"))
                 
                 HStack {
                     if isShowingConfirmPassword {
-                        TextField("", text: $confirmPassword, prompt: Text("Confirm new password").foregroundColor(.gray))
+                        TextField("Confirm new password", text: $confirmPassword)
                             .autocapitalization(.none)
+                            .textContentType(.newPassword)
+                            .submitLabel(.done)
                     } else {
-                        SecureField("", text: $confirmPassword, prompt: Text("Confirm new password").foregroundColor(.gray))
+                        SecureField("Confirm new password", text: $confirmPassword)
+                            .textContentType(.newPassword)
+                            .submitLabel(.done)
                     }
                     
                     Button(action: { isShowingConfirmPassword.toggle() }) {
                         Image(systemName: isShowingConfirmPassword ? "eye.slash.fill" : "eye.fill")
                             .foregroundColor(.gray)
                     }
+                    .padding(.trailing, 8)
                 }
                 .padding()
                 .background(Color("FieldBackground"))
@@ -125,6 +153,7 @@ struct ResetPasswordView: View {
                 .cornerRadius(12)
             }
             .disabled(!isFormValid || isLoading)
+            .padding(.top, 12)
             
             // Back to login
             Button(action: onBackToLogin) {
@@ -137,18 +166,24 @@ struct ResetPasswordView: View {
                 .foregroundColor(Color("AccentColor"))
             }
             .padding(.top, 20)
+            
+            Spacer()
         }
         .onChange(of: newPassword) {
-            isPasswordValid = newPassword.isValidPassword
+            isPasswordValid = newPassword.isEmpty || newPassword.isValidPassword
             isPasswordMatching = newPassword == confirmPassword
         }
         .onChange(of: confirmPassword) {
             isPasswordMatching = newPassword == confirmPassword
         }
+        .sheet(isPresented: $showPasswordInfo) {
+            PasswordInfoSheet()
+                .presentationDetents([.height(250)])
+        }
     }
     
     private var isFormValid: Bool {
-        !newPassword.isEmpty && isPasswordValid && isPasswordMatching
+        !newPassword.isEmpty && newPassword.isValidPassword && isPasswordMatching && !confirmPassword.isEmpty
     }
     
     private func handleReset() {
@@ -158,12 +193,44 @@ struct ResetPasswordView: View {
         }
         
         // Simulate backend call to update password
+        // In a real app, this would call a Supabase function to update the user's password
         DispatchQueue.main.asyncAfter(deadline: .now() + 1.5) {
             isLoading = false
             rotationAngle = 0
             
-            // Here you would typically call an API to update the password
+            // Simulate success - in production would verify OTP and update password in database
             onResetSuccess()
         }
     }
+}
+
+struct PasswordInfoSheet: View {
+    var body: some View {
+        VStack(alignment: .leading, spacing: 16) {
+            Text("Password Requirements")
+                .font(.headline)
+                .foregroundColor(Color("PrimaryText"))
+            
+            VStack(alignment: .leading, spacing: 8) {
+                PasswordRequirementRow(text: "At least 6 characters")
+                PasswordRequirementRow(text: "1 uppercase letter (A-Z)")
+                PasswordRequirementRow(text: "1 lowercase letter (a-z)")
+                PasswordRequirementRow(text: "1 number (0-9)")
+                PasswordRequirementRow(text: "1 special character (!@#$%^&*)")
+            }
+            .font(.subheadline)
+        }
+        .padding(20)
+    }
+}
+
+#Preview {
+    ResetPasswordView(
+        email: "user@example.com",
+        otp: "123456",
+        onBackToLogin: {},
+        onResetSuccess: {},
+        onResetError: { _ in }
+    )
+    .padding()
 }
