@@ -89,8 +89,6 @@ struct OTPVerificationView: View {
             // Back button
             Button(action: onBackToForgotPassword) {
                 HStack {
-                    Image(systemName: "arrow.left")
-                        .font(.system(size: 14))
                     Text("Back")
                         .font(.system(size: 16))
                 }
@@ -195,7 +193,7 @@ struct OTPInputField: View {
                 .textContentType(.oneTimeCode)
                 .opacity(0) // Hide the actual TextField
                 .focused($isFocused)
-                .onChange(of: otp) { newValue in
+                .onChange(of: otp) {oldValue, newValue in
                     let filtered = newValue.filter { $0.isNumber }
                     otp = String(filtered.prefix(6))
                     if otp.count == 6 {

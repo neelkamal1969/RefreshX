@@ -47,7 +47,7 @@ struct LoginView: View {
                         RoundedRectangle(cornerRadius: 10)
                             .stroke(isEmailValid ? Color.gray.opacity(0.2) : Color.red, lineWidth: 1)
                     )
-                    .onChange(of: email) {
+                    .onChange(of: email) {oldValue, newValue in  // Updated to new syntax
                         isEmailValid = email.isEmpty || User.isValidEmail(email)
                     }
                 
@@ -177,7 +177,7 @@ struct LoginView: View {
     }
 }
 
-#Preview {
+#Preview(traits: .sizeThatFitsLayout) {  // Updated to use traits parameter
     LoginView(
         onSignUp: {},
         onForgotPassword: {},
@@ -185,7 +185,4 @@ struct LoginView: View {
         onLoginError: { _ in }
     )
     .padding()
-    .previewLayout(.sizeThatFits)
 }
-
-

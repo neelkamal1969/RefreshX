@@ -75,10 +75,16 @@ class DataManager: ObservableObject {
     
     /// Load all user-specific data
     func loadUserData() {
-        guard let user = currentUser else { return }
+        guard currentUser != nil else { return }
         
-        loadExercises()
-        loadArticles()
+        
+        loadExercises() { _ in
+            // Exercises loaded successfully
+        }
+        
+        loadArticles() { _ in
+            // Articles loaded successfully
+        }
         loadUserRoutine()
         loadNotifications()
         loadProgressData()
@@ -101,20 +107,55 @@ class DataManager: ObservableObject {
     
     // MARK: - Sample Data Loading
     
-    func loadExercises() {
-        let sampleExercises = createSampleExercises()
-        for exercise in sampleExercises {
+    // Paginated exercise loading function with optional filtering
+    func loadExercises(forFocusArea: FocusArea? = nil, limit: Int = 20, offset: Int = 0, completion: @escaping ([Exercise]) -> Void) {
+        // When implementing with Supabase:
+        // var query = supabase.from("exercises").select()
+        // if let area = forFocusArea {
+        //    query = query.eq("focusArea", area.rawValue)
+        // }
+        // query = query.range(offset, offset + limit)
+        
+        // For now, simulate pagination with local data:
+        var exerciseArray = createSampleExercises()
+        
+        if let area = forFocusArea {
+            exerciseArray = exerciseArray.filter { $0.focusArea == area }
+        }
+        
+        let paginatedExercises = Array(exerciseArray.sorted { $0.addedDate > $1.addedDate }
+                                 .dropFirst(offset).prefix(limit))
+        
+        // Cache the results locally
+        for exercise in paginatedExercises {
             exercises[exercise.id] = exercise
         }
+        
+        completion(paginatedExercises)
     }
+
     
-    func loadArticles() {
-        let sampleArticles = createSampleArticles()
-        for article in sampleArticles {
+    // Paginated article loading function
+    func loadArticles(limit: Int = 20, offset: Int = 0, completion: @escaping ([Article]) -> Void) {
+        // When implementing with Supabase, adapt to fetch only what's needed:
+        // let query = supabase.from("articles").select().range(offset, offset + limit)
+        
+        // For now, simulate pagination with the local data:
+        let paginatedArticles = Array(createSampleArticles().sorted { $0.addingDate > $1.addingDate }
+                               .dropFirst(offset).prefix(limit))
+        
+        // Cache the results locally
+        for article in paginatedArticles {
             articles[article.id] = article
         }
+        
+        completion(paginatedArticles)
     }
     
+   
+ 
+   
+
     func loadUserRoutine() {
         guard let user = currentUser, userRoutine == nil else { return }
         
@@ -149,6 +190,7 @@ class DataManager: ObservableObject {
         if let id = backExerciseId { exercises[id]?.isAddedToRoutine = true }
         if let id = wristExerciseId { exercises[id]?.isAddedToRoutine = true }
     }
+
     
     func loadNotifications() {
         guard let user = currentUser, notifications.isEmpty else { return }
@@ -202,6 +244,7 @@ class DataManager: ObservableObject {
                     totalExercises: 8,
                     completedBreaks: 2,
                     totalBreaks: 4,
+                    userBreakPreference: user.numberOfBreaksPreferred, // Pass user preference directly
                     screenTime: 360,
                     eyeExercisesCompleted: 2,
                     eyeExercisesTotal: 3,
@@ -302,15 +345,16 @@ class DataManager: ObservableObject {
     
     // MARK: - Break Scheduling
     
-    func calculateBreakSchedule() -> [Date] {
+    func calculateBreakSchedule(customStartTime: Date? = nil, customEndTime: Date? = nil,
+                               customNumBreaks: Int? = nil) -> [Date] {
         guard let user = currentUser else { return [] }
         
         let calendar = Calendar.current
         var now = Date()
         var dayComponents = calendar.dateComponents([.year, .month, .day], from: now)
         
-        let startComponents = calendar.dateComponents([.hour, .minute], from: user.jobStartTime)
-        let endComponents = calendar.dateComponents([.hour, .minute], from: user.jobEndTime)
+        let startComponents = calendar.dateComponents([.hour, .minute], from: customStartTime ?? user.jobStartTime)
+        let endComponents = calendar.dateComponents([.hour, .minute], from: customEndTime ?? user.jobEndTime)
         
         dayComponents.hour = startComponents.hour
         dayComponents.minute = startComponents.minute
@@ -327,10 +371,11 @@ class DataManager: ObservableObject {
         }
         
         let workDuration = Int(endTime.timeIntervalSince(startTime))
-        let breakInterval = workDuration / (user.numberOfBreaksPreferred + 1)
+        let numberOfBreaks = customNumBreaks ?? user.numberOfBreaksPreferred
+        let breakInterval = workDuration / (numberOfBreaks + 1)
         
         var breakTimes: [Date] = []
-        for i in 1...user.numberOfBreaksPreferred {
+        for i in 1...numberOfBreaks {
             let breakTime = startTime.addingTimeInterval(Double(breakInterval * i))
             if breakTime > now && breakTime < endTime {
                 breakTimes.append(breakTime)
@@ -346,7 +391,6 @@ class DataManager: ObservableObject {
     }
     
     // MARK: - Progress Tracking
-    
     func recordExerciseSession(_ session: ExerciseSession) {
         exerciseSessions.append(session)
         
@@ -356,6 +400,7 @@ class DataManager: ObservableObject {
                     id: UUID(),
                     userId: session.userId,
                     date: Date(),
+                    userBreakPreference: currentUser?.numberOfBreaksPreferred, // Pass user preference directly
                     lastUpdated: Date()
                 )
             } catch {
@@ -379,7 +424,11 @@ class DataManager: ObservableObject {
     
     func recordBreakSession(_ session: BreakSession) {
         breakSessions.append(session)
-        dailyProgress?.addCompletedBreak(session)
+        dailyProgress?.addCompletedBreak(
+            session,
+            exercises: exercises,
+            userWeight: userSettings?.userWeight
+        )
     }
     
     func exerciseCompletionPercentage(for focusArea: FocusArea) -> Double {
@@ -504,13 +553,13 @@ class DataManager: ObservableObject {
     }
     
     func toggleFavorite(articleId: UUID) {
-        if let index = articles.index(forKey: articleId) {
+        if articles.index(forKey: articleId) != nil {
             articles[articleId]?.isFavorite.toggle()
         }
     }
     
     func markArticleAsRead(articleId: UUID) {
-        if let index = articles.index(forKey: articleId) {
+        if articles.index(forKey: articleId) != nil {
             articles[articleId]?.isRead = true
             articles[articleId]?.readByNumOfUsers += 1
             
@@ -536,19 +585,34 @@ class DataManager: ObservableObject {
         
         if routine.containsExercise(exerciseId) {
             routine.removeExercise(exerciseId, focusArea: focusArea)
-            if let index = exercises.index(forKey: exerciseId) {
+            if exercises.index(forKey: exerciseId) != nil {
                 exercises[exerciseId]?.isAddedToRoutine = false
             }
         } else {
             routine.addExercise(exerciseId, focusArea: focusArea)
-            if let index = exercises.index(forKey: exerciseId) {
+            if exercises.index(forKey: exerciseId) != nil {
                 exercises[exerciseId]?.isAddedToRoutine = true
             }
         }
         
         userRoutine = routine
+        
     }
-    
+    // When creating BreakSessions, pass the userSettings remindersBefore value
+    func createBreakSession(scheduledTime: Date, duration: Int) throws -> BreakSession {
+        guard let user = currentUser else { throw NSError(domain: "RefreshX", code: 1, userInfo: [NSLocalizedDescriptionKey: "No user logged in"]) }
+        
+        let remindersBefore = userSettings?.remindersBefore ?? 5
+        
+        let session = try BreakSession(
+            userId: user.id,
+            scheduledTime: scheduledTime,
+            duration: duration,
+            remindersBefore: remindersBefore
+        )
+        
+        return session
+    }
     // MARK: - Sample Data Methods
     
     private func createSampleExercises() -> [Exercise] {

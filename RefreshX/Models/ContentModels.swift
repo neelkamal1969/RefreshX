@@ -24,6 +24,26 @@ struct Article: Identifiable, Codable, ExerciseRelated {
     var description: String
     var content: String
     
+    var hasFullContent: Bool = false
+    // Method to load full content when needed
+    mutating func loadFullContent(completion: @escaping (Bool) -> Void) {
+        // When implementing with Supabase:
+        // let query = supabase.from("articles").select("content").eq("id", id)
+        // query.execute { result in
+        //     if let data = result.data, let newContent = data["content"] as? String {
+        //         self.content = newContent
+        //         self.hasFullContent = true
+        //         completion(true)
+        //     } else {
+        //         completion(false)
+        //     }
+        // }
+        
+        // For now, we'll simulate success since we already have the content
+        hasFullContent = true
+        completion(true)
+    }
+    
     init(id: UUID = UUID(), title: String, author: String, readTime: Int, mainTopic: FocusArea, additionalTopics: [String]? = nil, thumbnailImage: String, mainImage: String, addingDate: Date = Date(), readByNumOfUsers: Int = 0, isRead: Bool = false, isFavorite: Bool = false, supportingLink: String? = nil, description: String, content: String) throws {
         guard !title.isEmpty, !author.isEmpty else { throw ValidationError.invalidText }
         guard readTime > 0 else { throw ValidationError.invalidReadTime }

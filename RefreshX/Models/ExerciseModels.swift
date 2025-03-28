@@ -59,32 +59,53 @@ struct Routine: Identifiable, Codable {
     var wristExercises: [UUID] = []
     var lastUpdated: Date = Date()
     
+    // These properties don't need to be encoded/decoded
+    private enum CodingKeys: String, CodingKey {
+        case id, userId, eyeExercises, backExercises, wristExercises, lastUpdated
+    }
+    
     var numberOfExercises: Int {
         return eyeExercises.count + backExercises.count + wristExercises.count
     }
     
-        // Total time in minutes
+    // Total time in minutes
     var totalTime: Int {
-        let dataManager = DataManager.shared
+        // This will be calculated by DataManager and cached there
+        return calculateTotalTime(with: DataManager.shared.exercises)
+    }
+    
+    // Calculate total time with provided exercises
+    func calculateTotalTime(with exercises: [UUID: Exercise]) -> Int {
         let totalSeconds = (eyeExercises + backExercises + wristExercises)
-            .compactMap { dataManager.getExercise(id: $0)?.totalDuration }
+            .compactMap { exercises[$0]?.totalDuration }
             .reduce(0, +)
         return totalSeconds / 60
     }
-
     
-    
-    
-    
-        // Total calories burned
+    // Total calories burned
     var totalCaloriesBurned: Double {
+        // Use DataManager to get user weight
         guard let userWeight = DataManager.shared.userSettings?.userWeight else { return 0 }
+        return calculateTotalCaloriesBurned(with: DataManager.shared.exercises, userWeight: userWeight)
+    }
+    // Add parameter-based getters that don't rely on DataManager
+    func getTotalTime(with exercises: [UUID: Exercise]) -> Int {
+        return calculateTotalTime(with: exercises)
+    }
+
+    func getTotalCaloriesBurned(with exercises: [UUID: Exercise], userWeight: Double) -> Double {
+        return calculateTotalCaloriesBurned(with: exercises, userWeight: userWeight)
+    }
+    // Calculate calories with provided weight and exercises
+    func calculateTotalCaloriesBurned(with exercises: [UUID: Exercise], userWeight: Double) -> Double {
         return (eyeExercises + backExercises + wristExercises)
-            .compactMap { DataManager.shared.getExercise(id: $0)?.calculateCaloriesBurned(userWeightKg: userWeight) }
+            .compactMap { exercises[$0]?.calculateCaloriesBurned(userWeightKg: userWeight) }
             .reduce(0, +)
     }
     
-        // Main focus area
+    
+    
+    // Main focus area
     var mainFocusArea: FocusArea? {
         let counts = [eyeExercises.count, backExercises.count, wristExercises.count]
         guard let maxCount = counts.max(), maxCount > 0 else { return nil }

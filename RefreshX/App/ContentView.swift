@@ -10,7 +10,6 @@ struct ContentView: View {
     @EnvironmentObject var dataManager: DataManager
     @State private var isShowingSplash = true
     @State private var isAnimating = false
-    @State private var rotation3D: Double = 0
     @State private var scale: CGFloat = 0.8
     @State private var mainContentOpacity: Double = 0
     
@@ -33,7 +32,6 @@ struct ContentView: View {
             if isShowingSplash {
                 SplashScreenView(
                     isAnimating: $isAnimating,
-                    rotation3D: $rotation3D,
                     scale: $scale
                 )
                 .zIndex(1)
@@ -45,11 +43,6 @@ struct ContentView: View {
                         scale = 1.0
                     }
                     
-                    // 3D rotation animation
-                    withAnimation(Animation.easeInOut(duration: 3.0).delay(0.5)) {
-                        rotation3D = 360
-                    }
-                    
                     // Pre-load and fade in main content beneath splash screen
                     DispatchQueue.main.asyncAfter(deadline: .now() + 4.5) {
                         withAnimation(.easeIn(duration: 1.5)) {
@@ -57,7 +50,7 @@ struct ContentView: View {
                         }
                     }
                     
-                    // Hide splash after delay (longer time)
+                    // Hide splash after delay
                     DispatchQueue.main.asyncAfter(deadline: .now() + 6.0) {
                         withAnimation(.easeOut(duration: 1.2)) {
                             isShowingSplash = false
@@ -72,12 +65,12 @@ struct ContentView: View {
 // Splash Screen View
 struct SplashScreenView: View {
     @Binding var isAnimating: Bool
-    @Binding var rotation3D: Double
     @Binding var scale: CGFloat
     @State private var pulseOpacity: Double = 0.7
     @State private var logoOpacity: Double = 1.0
     @State private var textOpacity: Double = 1.0
     @State private var backgroundOpacity: Double = 1.0
+    @State private var rotation3D: Double = 0  // Moved rotation state here
     
     var body: some View {
         ZStack {
@@ -134,8 +127,14 @@ struct SplashScreenView: View {
                         .animation(Animation.easeInOut(duration: 2.5).repeatForever(autoreverses: true), value: isAnimating)
                         .opacity(logoOpacity)
                         .onAppear {
+                            // Pulse animation
                             withAnimation(Animation.easeInOut(duration: 2.5).repeatForever(autoreverses: true)) {
                                 pulseOpacity = 0.4
+                            }
+                            
+                            // Single rotation animation
+                            withAnimation(Animation.easeInOut(duration: 2.0).delay(0.5)) {
+                                rotation3D = 360  // One full rotation
                             }
                             
                             // Fade out logo at the end

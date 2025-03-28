@@ -2,8 +2,13 @@
   "colors" : [
     {
       "color" : {
-        "platform" : "visionos",
-        "reference" : "systemGray6Color"
+        "color-space" : "srgb",
+        "components" : {
+          "alpha" : "1.000",
+          "blue" : "0xF7",
+          "green" : "0xF2",
+          "red" : "0xF2"
+        }
       },
       "idiom" : "universal"
     },

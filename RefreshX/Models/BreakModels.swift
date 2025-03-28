@@ -5,9 +5,7 @@
 //  Created by student-2 on 25/03/25.
 //
 
-
 import Foundation
-
 struct BreakSession: Identifiable, Codable, Trackable {
     let id: UUID
     let userId: UUID
@@ -19,9 +17,14 @@ struct BreakSession: Identifiable, Codable, Trackable {
     var exercisesCompleted: [UUID]
     var skipped: Bool
     var completed: Bool
+    var remindersBefore: Int = 5
     var lastUpdated: Date
     
-    init(id: UUID = UUID(), userId: UUID, scheduledTime: Date, duration: Int, exercisesCompleted: [UUID] = [], skipped: Bool = false, completed: Bool = false, lastUpdated: Date = Date()) throws {
+    enum CodingKeys: String, CodingKey {
+        case id, userId, scheduledTime, startTime, endTime, duration, actualDuration, exercisesCompleted, skipped, completed, remindersBefore, lastUpdated
+    }
+    
+    init(id: UUID = UUID(), userId: UUID, scheduledTime: Date, duration: Int, exercisesCompleted: [UUID] = [], skipped: Bool = false, completed: Bool = false, remindersBefore: Int = 5, lastUpdated: Date = Date()) throws {
         guard duration >= 60 else { throw ValidationError.invalidDuration } // Min 1 minute
         self.id = id
         self.userId = userId
@@ -33,12 +36,12 @@ struct BreakSession: Identifiable, Codable, Trackable {
         self.exercisesCompleted = exercisesCompleted
         self.skipped = skipped
         self.completed = completed
+        self.remindersBefore = remindersBefore
         self.lastUpdated = lastUpdated
     }
     
     var notificationTime: Date {
-        let minutesBefore = DataManager.shared.userSettings?.remindersBefore ?? 5
-        return Calendar.current.date(byAdding: .minute, value: -minutesBefore, to: scheduledTime) ?? scheduledTime
+        return Calendar.current.date(byAdding: .minute, value: -remindersBefore, to: scheduledTime) ?? scheduledTime
     }
     
     var isActive: Bool {

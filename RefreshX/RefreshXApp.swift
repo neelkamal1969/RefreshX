@@ -21,7 +21,7 @@ struct RefreshXApp: App {
                     print("App launched")
                 }
         }
-        .onChange(of: scenePhase) { newPhase in
+        .onChange(of: scenePhase) { oldPhase, newPhase in  // Updated to two-parameter version
             switch newPhase {
             case .active:
                 print("App became active")

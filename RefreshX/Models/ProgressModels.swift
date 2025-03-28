@@ -5,7 +5,6 @@
 //  Created by student-2 on 25/03/25.
 //
 
-
 import Foundation
 
 struct DailyProgress: Identifiable, Codable, Trackable {
@@ -31,8 +30,8 @@ struct DailyProgress: Identifiable, Codable, Trackable {
     var totalCaloriesBurned: Double
     var lastUpdated: Date
     
-    init(id: UUID = UUID(), userId: UUID, date: Date = Date(), completedExercises: Int = 0, totalExercises: Int? = nil, completedBreaks: Int = 0, totalBreaks: Int? = nil, screenTime: Int = 0, eyeExercisesCompleted: Int = 0, eyeExercisesTotal: Int = 0, eyeExerciseTime: Int = 0, backExercisesCompleted: Int = 0, backExercisesTotal: Int = 0, backExerciseTime: Int = 0, backFlexibilityScore: Double = 0.0, wristExercisesCompleted: Int = 0, wristExercisesTotal: Int = 0, wristExerciseTime: Int = 0, wristStrengthScore: Double = 0.0, totalCaloriesBurned: Double = 0.0, lastUpdated: Date = Date()) throws {
-        let routine = DataManager.shared.userRoutine
+    
+    init(id: UUID = UUID(), userId: UUID, date: Date = Date(), completedExercises: Int = 0, totalExercises: Int? = nil, completedBreaks: Int = 0, totalBreaks: Int? = nil, userBreakPreference: Int? = nil, screenTime: Int = 0, eyeExercisesCompleted: Int = 0, eyeExercisesTotal: Int = 0, eyeExerciseTime: Int = 0, backExercisesCompleted: Int = 0, backExercisesTotal: Int = 0, backExerciseTime: Int = 0, backFlexibilityScore: Double = 0.0, wristExercisesCompleted: Int = 0, wristExercisesTotal: Int = 0, wristExerciseTime: Int = 0, wristStrengthScore: Double = 0.0, totalCaloriesBurned: Double = 0.0, lastUpdated: Date = Date(), routineExerciseCount: Int? = nil) throws {
         guard completedExercises >= 0, completedBreaks >= 0, screenTime >= 0 else { throw ValidationError.invalidCounts }
         guard eyeExercisesCompleted >= 0, eyeExercisesTotal >= 0, eyeExerciseTime >= 0 else { throw ValidationError.invalidEyeStats }
         guard backExercisesCompleted >= 0, backExercisesTotal >= 0, backExerciseTime >= 0, backFlexibilityScore >= 0 else { throw ValidationError.invalidBackStats }
@@ -43,9 +42,9 @@ struct DailyProgress: Identifiable, Codable, Trackable {
         self.userId = userId
         self.date = date
         self.completedExercises = completedExercises
-        self.totalExercises = totalExercises ?? routine?.numberOfExercises ?? 0
+        self.totalExercises = totalExercises ?? routineExerciseCount ?? 0
         self.completedBreaks = completedBreaks
-        self.totalBreaks = totalBreaks ?? DataManager.shared.currentUser?.numberOfBreaksPreferred ?? 0
+        self.totalBreaks = totalBreaks ?? userBreakPreference ?? 0
         self.screenTime = screenTime
         self.eyeExercisesCompleted = eyeExercisesCompleted
         self.eyeExercisesTotal = eyeExercisesTotal
@@ -93,23 +92,25 @@ struct DailyProgress: Identifiable, Codable, Trackable {
         lastUpdated = Date()
     }
     
-    mutating func addCompletedBreak(_ breakSession: BreakSession) {
+    mutating func addCompletedBreak(_ breakSession: BreakSession, exercises: [UUID: Exercise], userWeight: Double?) {
         guard breakSession.completed, !Calendar.current.isDate(date, equalTo: breakSession.scheduledTime, toGranularity: .day) else { return }
         completedBreaks += 1
         
         for exerciseId in breakSession.exercisesCompleted {
-            if let exercise = DataManager.shared.getExercise(id: exerciseId),
-               let userWeight = DataManager.shared.userSettings?.userWeight {
+            if let exercise = exercises[exerciseId],
+               let weight = userWeight {
+                
                 let session = try? ExerciseSession(
                     userId: breakSession.userId,
                     exerciseId: exerciseId,
                     exerciseTitle: exercise.title,
                     startTime: breakSession.startTime ?? Date(),
                     endTime: breakSession.endTime ?? Date(),
-                    caloriesBurned: exercise.calculateCaloriesBurned(userWeightKg: userWeight),
+                    caloriesBurned: exercise.calculateCaloriesBurned(userWeightKg: weight),
                     completed: true,
                     focusArea: exercise.focusArea
                 )
+                
                 if let session = session {
                     addCompletedExercise(session)
                 }
@@ -117,7 +118,6 @@ struct DailyProgress: Identifiable, Codable, Trackable {
         }
         lastUpdated = Date()
     }
-    
     enum ValidationError: Error {
         case invalidCounts
         case invalidEyeStats
@@ -197,7 +197,7 @@ struct WeeklyStats: Identifiable, Codable, Trackable {
         let weekStart = Calendar.current.date(from: Calendar.current.dateComponents([.yearForWeekOfYear, .weekOfYear], from: dailyRecords[0].date))!
         let weekEnd = Calendar.current.date(byAdding: .day, value: 6, to: weekStart)!
         
-        var stats = try? WeeklyStats(id: UUID(), userId: userId, weekStartDate: weekStart, weekEndDate: weekEnd)
+        let stats = try? WeeklyStats(id: UUID(), userId: userId, weekStartDate: weekStart, weekEndDate: weekEnd)
         guard var stats = stats else { return nil }
         var peakTime = 0
         

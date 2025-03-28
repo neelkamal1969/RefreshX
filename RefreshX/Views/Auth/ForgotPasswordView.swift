@@ -88,8 +88,6 @@ struct ForgotPasswordView: View {
             // Back to login
             Button(action: onBackToLogin) {
                 HStack {
-                    Image(systemName: "arrow.left")
-                        .font(.system(size: 14))
                     Text("Back to Login")
                         .font(.system(size: 16))
                 }

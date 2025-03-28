@@ -35,13 +35,17 @@ class User: Identifiable, Codable {
         let components = calendar.dateComponents([.hour, .minute], from: jobStartTime, to: jobEndTime)
         return max(0, (components.hour ?? 0) * 60 + (components.minute ?? 0)) // Ensure non-negative
     }
-    
+    static let defaultBreakDuration = 15
+    static let minBreakDuration = 5
+    static let maxBreakDuration = 30
+    static let breakTimeRatio = 0.2 // 20% of work time
     /// Computed property for recommended break duration based on work hours
     var recommendedBreakDuration: Int {
-        guard numberOfBreaksPreferred > 0 else { return 15 } // Default 15 min if no breaks
-        let totalBreakTime = Int(Double(workDurationMinutes) * 0.2)
+        guard numberOfBreaksPreferred > 0 else { return User.defaultBreakDuration }
+        let breakTimePercentage = User.breakTimeRatio
+        let totalBreakTime = Int(Double(workDurationMinutes) * breakTimePercentage)
         let recommendedDuration = totalBreakTime / numberOfBreaksPreferred
-        return min(max(recommendedDuration, 5), 30) // Cap between 5 and 30 minutes
+        return min(max(recommendedDuration, User.minBreakDuration), User.maxBreakDuration)
     }
     
     /// Total break duration in minutes
