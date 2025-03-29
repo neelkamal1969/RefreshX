@@ -1,0 +1,127 @@
+# RefreshX App Development Guidance Request
+
+I'm developing RefreshX, a SwiftUI app that helps users manage breaks and exercises during work to reduce eye, back, and wrist strain. I'm a beginner with no prior coding experience, working with Xcode and planning to use Supabase's free tier for backend. I need comprehensive guidance for my frontend development.
+
+## Project Context
+
+### Current Status
+- **Data Models**: Completed and validated (User, Exercise, Routine, BreakSession, Article, Progress tracking models)
+- **Authentication Flow**: Implemented (ContentView → AuthView → LoginView/SignUpView/ForgotPasswordView/OTPVerificationView/ResetPasswordView)
+- **Project Structure**: Organized into Models, Views (Auth, Exercises, Explore, Home, Profile, Progress, Shared), Services, and Utils
+- **Supabase**: Set up with credentials but no tables/implementation yet
+
+### App Architecture
+1. **ContentView**: Root view with splash screen animations and authentication state management
+2. **MainTabView**: Tab navigation between main sections
+3. **Core Sections**:
+   - **Home**:
+      - Break timer countdown with start/stop functionality
+      - Today's Routine with collapsible sections (Eye, Back, Wrist exercises) and actions like adding/removing exercise
+      - Exercise execution views with timers and controls
+      - Quick progress summary showing streaks and completion percentages
+   - **Exercises**:
+      - Library catalog with filtering and sorting
+      - Detail views with instructions and media
+      - Add/remove from routine functionality
+   - **Progress**:
+      - Daily and weekly statistics
+      - Visual charts for time spent by category
+      - Streak tracking and achievements
+   - **Explore**:
+      - Article library (standalone feature)
+      - Article detail views with favorite/read tracking
+      - Categorization by focus area
+   - **Profile**:
+      - User information management
+      - Break schedule configuration (work hours, break frequency, duration)
+      - App settings (notifications, themes, accessibility)
+
+## Development Strategy Question
+
+We've discussed two potential development sequences and identified key dependencies between sections:
+
+### Original Suggestion:
+1. Authentication (completed)
+2. Home (with break timer, today's routine)
+3. Exercise Library
+4. Progress Tracking
+5. Explore Section
+6. Profile & Settings
+
+### Revised Approach (Our Discussion):
+1. Authentication (completed)
+2. Profile Section (provides settings for other features)
+   - *Reasoning*: Establishes user preferences and break settings needed by Home, relatively self-contained, provides configuration capabilities before implementing features that use those configurations
+3. Explore Section (standalone, simpler)
+   - *Reasoning*: Minimal dependencies (only needs Articles data model), provides immediate value to users, offers quick win with a completed section
+
+  
+4. Exercise Library
+5. Home Screen (uses profile settings and exercise data)
+   - *Reasoning*: Can use actual break settings from Profile, can display real routines and exercises, provides a more cohesive user experience once other parts are ready
+6. Progress Tracking
+
+### Key Dependencies Identified:
+- Home screen relies on break settings configured in Profile
+- Home screen uses routines that interact with exercises
+- Building Home first would require more assumptions and placeholder data
+- Profile → Explore → Exercises → Home sequence prevents conflicts and reduces refactoring
+- This approach ensures data flows naturally through the shared DataManager
+
+## What I Need From You
+
+1. **Development Sequence Analysis**:
+   - Confirm if the revised approach (Profile → Explore → Exercises → Home) is optimal
+   - Identify any additional dependencies I may have missed
+   - Consider developmental complexity and user value in your assessment
+
+2. **Current Code Review**:
+   - I've shared my Auth flow implementation in previous prompts
+   - Assess code quality, structure, and integration with models
+   - Identify any patterns to continue or avoid
+   - Flag any inconsistencies in onChange handlers or other syntax
+
+3. **Next Feature Implementation Guidance**:
+   - Provide a detailed implementation plan for the Explore section
+   - Include component breakdown (eg.ArticleListView, ArticleDetailView, etc. for Explore)
+   - Explain data flow from DataManager to views
+   - Suggest UI approaches consistent with my existing style
+   - Address potential challenges with the Article model integration
+
+4. **Data Model Flexibility**:
+   - I'm open to implementing minor changes to data models if necessary
+   - Suggest any adjustments that would improve the frontend implementation
+   - Ensure models support efficient data retrieval patterns
+
+## Technical Considerations
+
+- **DataManager Integration**:
+  - My singleton manager handles all data operations
+  - Need to ensure proper updating of shared state
+  - Articles need to be properly cached for offline viewing
+
+- **SwiftUI Best Practices**:
+  - Using @State, @EnvironmentObject, @Published patterns
+  - Need consistent approach to animation and transitions
+  - Should follow iOS Human Interface Guidelines
+
+- **Time-Related Components**:
+  - Break timing calculations need to be efficient
+  - Multiple timer components might conflict
+  - Need strategy for background timer handling
+
+- **Resource Management**:
+  - If you need any additional resources or screenshots that aren't in the codebase, please ask
+  - Clarify any assumptions about assets or images
+
+- **Error Prevention**:
+  - All code should be free of syntax errors and logical inconsistencies
+  - Avoid redundancies and repetition in the implementation
+  - Ensure consistent error handling throughout
+
+- **Future-Proofing**:
+  - Code should support easy Supabase backend connection
+  - Design should accommodate potential feature expansion
+  - Performance considerations for larger data sets
+
+Please provide comprehensive, beginner-friendly guidance that builds on our existing conversations. Focus on actionable steps I can take immediately to implement the next section in the most logical way. If anything is unclear or you need additional information about my current implementation, please ask.

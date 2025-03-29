@@ -48,8 +48,8 @@ struct SignUpView: View {
             }
             .padding(.vertical, 20)
         }
-        .onChange(of: password) { updatePasswordValidation() }
-        .onChange(of: confirmPassword) { isPasswordMatching = password == confirmPassword }
+        .onChange(of: password) { oldValue, newValue in updatePasswordValidation() }
+        .onChange(of: confirmPassword) { oldValue, newValue in isPasswordMatching = password == confirmPassword }
         // Dismiss keyboard when tapping outside
         .onTapGesture {
             UIApplication.shared.sendAction(#selector(UIResponder.resignFirstResponder), to: nil, from: nil, for: nil)
@@ -85,7 +85,7 @@ struct SignUpView: View {
                     RoundedRectangle(cornerRadius: 10)
                         .stroke(isNameValid ? Color.gray.opacity(0.2) : Color.red, lineWidth: 1)
                 )
-                .onChange(of: name) { isNameValid = name.isEmpty || name.count >= 3 }
+                .onChange(of: name) { oldValue, newValue in isNameValid = name.isEmpty || name.count >= 3 }
             
             if !isNameValid {
                 Text("Name must be at least 3 characters")
@@ -110,7 +110,7 @@ struct SignUpView: View {
                     .labelsHidden()
                     .accentColor(Color.blue)
                     .onChange(of: dateOfBirth) {
-                        let ageComponents = Calendar.current.dateComponents([.year], from: dateOfBirth, to: Date())
+                        oldValue, newValue in let ageComponents = Calendar.current.dateComponents([.year], from: dateOfBirth, to: Date())
                         isAgeValid = (ageComponents.year ?? 0) >= 3
                     }
             }
@@ -143,7 +143,7 @@ struct SignUpView: View {
                         .stroke(isEmailValid ? Color.gray.opacity(0.2) : Color.red, lineWidth: 1)
                 )
                 .onChange(of: email) {
-                    isEmailValid = email.isEmpty || User.isValidEmail(email)
+                    oldValue, newValue in isEmailValid = email.isEmpty || User.isValidEmail(email)
                 }
             
             if !isEmailValid {

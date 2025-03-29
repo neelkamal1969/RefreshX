@@ -169,11 +169,11 @@ struct ResetPasswordView: View {
             Spacer()
         }
         .onChange(of: newPassword) {
-            isPasswordValid = newPassword.isEmpty || newPassword.isValidPassword
+            oldValue, newValue in isPasswordValid = newPassword.isEmpty || newPassword.isValidPassword
             isPasswordMatching = newPassword == confirmPassword
         }
         .onChange(of: confirmPassword) {
-            isPasswordMatching = newPassword == confirmPassword
+            oldValue, newValue in isPasswordMatching = newPassword == confirmPassword
         }
         .sheet(isPresented: $showPasswordInfo) {
             PasswordInfoSheet()

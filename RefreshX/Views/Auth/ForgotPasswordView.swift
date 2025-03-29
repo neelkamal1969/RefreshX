@@ -52,7 +52,7 @@ struct ForgotPasswordView: View {
                             .stroke(isEmailValid ? Color.gray.opacity(0.2) : Color.red, lineWidth: 1)
                     )
                     .onChange(of: email) {
-                        isEmailValid = email.isEmpty || User.isValidEmail(email)
+                        oldValue, newValue in isEmailValid = email.isEmpty || User.isValidEmail(email)
                     }
                 
                 if !isEmailValid {

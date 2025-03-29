@@ -6,6 +6,7 @@
 //
 import Foundation
 import Combine
+import SwiftUI
 
 /// Central data manager with shared instance pattern
 class DataManager: ObservableObject {
@@ -806,5 +807,171 @@ class DataManager: ObservableObject {
             print("Failed to create sample articles: \(error)")
             return [] // Return empty array as fallback
         }
+    }
+}
+//
+// DataManager Extensions for Profile-Related Functions
+
+// MARK: - Theme and Settings Management
+extension DataManager {
+    // Update userSettings property with proper validation and notification
+    func updateUserSettings(_ settings: UserSettings) {
+        // Store previous dark mode setting to check for changes
+        let previousDarkMode = self.userSettings?.darkModeEnabled
+        
+        // Update settings in DataManager
+        self.userSettings = settings
+        
+        // Check if dark mode changed
+        if previousDarkMode != nil && previousDarkMode != settings.darkModeEnabled {
+            // Notify system of theme change
+            NotificationCenter.default.post(
+                name: NSNotification.Name("ThemeChanged"),
+                object: nil,
+                userInfo: ["darkMode": settings.darkModeEnabled]
+            )
+            
+            // Apply dark mode setting immediately
+            applyDarkModeSetting(settings.darkModeEnabled)
+        }
+        
+        // Apply accessibility settings
+        applyAccessibilitySettings(largeText: settings.largeTextEnabled)
+        
+        // Trigger UI refresh
+        self.objectWillChange.send()
+        
+        // In a real implementation, this would also update Supabase
+        // supabase.from("user_settings").update(...)
+    }
+    
+    // Apply dark mode setting across the app
+    private func applyDarkModeSetting(_ isDarkMode: Bool) {
+        // Apply theme changes app-wide using modern approach for iOS 15+
+        DispatchQueue.main.async {
+            // Get all connected scenes
+            for scene in UIApplication.shared.connectedScenes {
+                if let windowScene = scene as? UIWindowScene {
+                    // Apply to all windows in this scene
+                    for window in windowScene.windows {
+                        window.overrideUserInterfaceStyle = isDarkMode ? .dark : .light
+                    }
+                }
+            }
+        }
+    }
+
+    
+    // Apply accessibility settings - fixed approach that works with the system
+    private func applyAccessibilitySettings(largeText: Bool?) {
+        // Only proceed if we have a valid value
+        guard let largeText = largeText else { return }
+        
+        // In a real app, we would use a more comprehensive approach
+        // For this implementation, we'll update the ThemeManager
+        ThemeManager.shared.setLargeText(enabled: largeText)
+        
+        // Log the change for debugging
+        print("Applied accessibility settings: largeText = \(largeText)")
+    }
+    
+    // Update user profile information with validation
+    func updateUserProfile(name: String, dateOfBirth: Date) throws {
+        guard let user = currentUser else {
+            throw NSError(domain: "RefreshX", code: 404, userInfo: [NSLocalizedDescriptionKey: "User not found"])
+        }
+        
+        guard !name.isEmpty, name.count >= 3 else {
+            throw NSError(domain: "RefreshX", code: 400, userInfo: [NSLocalizedDescriptionKey: "Name must be at least 3 characters"])
+        }
+        
+        let calendar = Calendar.current
+        let ageComponents = calendar.dateComponents([.year], from: dateOfBirth, to: Date())
+        guard (ageComponents.year ?? 0) >= 3 else {
+            throw NSError(domain: "RefreshX", code: 400, userInfo: [NSLocalizedDescriptionKey: "Invalid date of birth"])
+        }
+        
+        user.name = name
+        user.dateOfBirth = dateOfBirth
+        
+        // Trigger UI refresh
+        self.objectWillChange.send()
+        
+        // In a real implementation, this would also update Supabase
+        // supabase.from("users").update(...)
+    }
+    
+    // Update break schedule with validation
+    func updateBreakSchedule(weekdays: Int, startTime: Date, endTime: Date,
+                             numberOfBreaks: Int, breakDuration: Int) throws {
+        guard let user = currentUser else {
+            throw NSError(domain: "RefreshX", code: 404, userInfo: [NSLocalizedDescriptionKey: "User not found"])
+        }
+        
+        // Validate input based on model constraints
+        guard weekdays >= 1 && weekdays <= 7 else {
+            throw NSError(domain: "RefreshX", code: 400, userInfo: [NSLocalizedDescriptionKey: "Weekdays must be between 1 and 7"])
+        }
+        
+        guard startTime < endTime else {
+            throw NSError(domain: "RefreshX", code: 400, userInfo: [NSLocalizedDescriptionKey: "Start time must be before end time"])
+        }
+        
+        guard numberOfBreaks >= 0 else {
+            throw NSError(domain: "RefreshX", code: 400, userInfo: [NSLocalizedDescriptionKey: "Number of breaks cannot be negative"])
+        }
+        
+        guard breakDuration >= 5 && breakDuration <= 60 else {
+            throw NSError(domain: "RefreshX", code: 400, userInfo: [NSLocalizedDescriptionKey: "Break duration must be between 5 and 60 minutes"])
+        }
+        
+        user.weekdays = weekdays
+        user.jobStartTime = startTime
+        user.jobEndTime = endTime
+        user.numberOfBreaksPreferred = numberOfBreaks
+        user.breakDuration = breakDuration
+        
+        // Trigger UI refresh
+        self.objectWillChange.send()
+        
+        // Update any scheduled breaks based on new preferences
+        updateScheduledBreaks()
+        
+        // In a real implementation, this would also update Supabase
+        // supabase.from("users").update(...)
+    }
+    
+    // Update scheduled breaks based on new user preferences
+    private func updateScheduledBreaks() {
+        // In a real app, this would:
+        // 1. Fetch upcoming breaks
+        // 2. Update their timing based on new user preferences
+        // 3. Reschedule notifications
+        print("Updating scheduled breaks based on new user preferences")
+    }
+    
+    // Save or update user profile image
+    func saveProfileImage(_ image: UIImage, for userId: UUID) -> String? {
+        guard let user = currentUser, user.id == userId else { return nil }
+        
+        // Generate unique filename
+        let filename = "profile_\(userId.uuidString)_\(Int(Date().timeIntervalSince1970))"
+        
+        // Save image to documents directory
+        if let savedFilename = image.saveToDocuments(with: filename) {
+            // Update user model
+            user.profileImageName = savedFilename
+            
+            // Trigger UI refresh
+            self.objectWillChange.send()
+            
+            // In a real app with Supabase:
+            // 1. Upload image to Supabase Storage
+            // 2. Update user record with image path
+            
+            return savedFilename
+        }
+        
+        return nil
     }
 }
